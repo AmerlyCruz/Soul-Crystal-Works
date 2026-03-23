@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Portafolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar">
+  <h2 class="logo">Soul Crystal Works</h2>
+  <div class="nav-links">
+    <a href="#proyectos">Proyectos</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+  <a href="https://wa.me/18493990014?text=Hola%20quiero%20una%20página%20web"
+   target="_blank"
+   class="btn"
+   onclick="trackWhatsApp()">
+  Quiero mi página web
+</a>
+</nav>
+
+  <section class="hero">
+    <h1>Hola, soy Ame 👋</h1>
+    <p>Desarrolladora web</p>
+  </section>
+
+  <section class="proyectos">
+    <h2>Mis Proyectos</h2>
+
+    <div class="cards">
+
+      <div class="card">
+        <img src="https://via.placeholder.com/300x200" alt="Proyecto 1">
+        <h3>Tienda de Belleza</h3>
+        <p>E-commerce con carrito y gestión de productos</p>
+        <a href="#" target="_blank">Ver página</a>
+      </div>
+
+      <div class="card" onclick="abrirModal()">
+        <img src="https://via.placeholder.com/300x200" alt="Proyecto 2">
+        <h3>Landing Page</h3>
+        <p>Página moderna para captar clientes</p>
+        <a href="#" target="_blank">Ver página</a>
+      </div>
+
+<div class="cursor"></div>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3>Proyecto</h3>
+    <p>Aquí puedes describir mejor el proyecto</p>
+  </div>
+</div>
+
+<section class="hero fade-in">
+<section id="proyectos" class="proyectos fade-in">
+    </div>
+  </section>
+
+<section class="ventas fade-in">
+  <h2>¿Por qué elegirme?</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Diseño moderno</h3>
+      <p>Páginas elegantes que destacan tu marca</p>
+    </div>
+
+    <div class="card">
+      <h3>Optimizado para ventas</h3>
+      <p>No solo es bonito, convierte visitantes en clientes</p>
+    </div>
+
+    <div class="card">
+      <h3>Rápido y profesional</h3>
+      <p>Entrega eficiente y soporte directo conmigo</p>
+    </div>
+  </div>
+</section>
+
+<section id="contacto" class="contacto fade-in">
+  <h2>Trabajemos juntos ✨</h2>
+  <p>Diseño páginas web elegantes, rápidas y enfocadas en ventas</p>
+
+ <a href="https://wa.me/18493990014?text=Hola%20vi%20tu%20portafolio%20y%20quiero%20info"
+   target="_blank"
+   class="btn"
+   onclick="trackWhatsApp()">
+  Escríbeme por WhatsApp
+</a>
+</section>
+
+<script src="script.js"></script>
+</body>
