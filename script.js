@@ -12,10 +12,25 @@ const mostrar = () => {
   });
 };
 
-window.addEventListener('scroll', mostrar);
-window.addEventListener('load', mostrar);
+let lastSparkle = 0;
 
-const cursor = document.querySelector('.cursor');
+document.addEventListener("mousemove", (e) => {
+  const now = Date.now();
+
+  // limita la cantidad (más elegante)
+  if (now - lastSparkle < 80) return;
+  lastSparkle = now;
+
+  const sparkle = document.createElement("div");
+  sparkle.className = "sparkle";
+
+  sparkle.style.left = e.clientX + "px";
+  sparkle.style.top = e.clientY + "px";
+
+  document.body.appendChild(sparkle);
+
+  setTimeout(() => sparkle.remove(), 800);
+});
 
 document.addEventListener('mousemove', (e) => {
   cursor.style.left = e.clientX + 'px';
