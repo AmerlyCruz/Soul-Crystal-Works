@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function spawnSparkles(clientX, clientY) {
       const now = Date.now();
-      if (now - lastSparkleAt < 22) return;
+      if (now - lastSparkleAt < 42) return;
 
       if (Math.abs(clientX - lastX) < 4 && Math.abs(clientY - lastY) < 4) return;
 
@@ -215,16 +215,16 @@ document.addEventListener('DOMContentLoaded', () => {
       lastX = clientX;
       lastY = clientY;
 
-      for (let index = 0; index < 3; index += 1) {
+      for (let index = 0; index < 2; index += 1) {
         const sparkle = document.createElement('span');
         sparkle.className = 'sparkle';
         sparkle.style.left = `${clientX + (Math.random() * 22 - 11)}px`;
         sparkle.style.top = `${clientY + (Math.random() * 22 - 11)}px`;
-        sparkle.style.setProperty('--sparkle-size', `${Math.round(Math.random() * 8 + 10)}px`);
+        sparkle.style.setProperty('--sparkle-size', `${Math.round(Math.random() * 6 + 8)}px`);
         sparkle.style.setProperty('--sparkle-hue', `${Math.round(Math.random() * 36 + 250)}deg`);
         sparkle.style.setProperty('--sparkle-rotate', `${Math.round(Math.random() * 90)}deg`);
         layer.appendChild(sparkle);
-        window.setTimeout(() => sparkle.remove(), 820);
+        window.setTimeout(() => sparkle.remove(), 900);
       }
     }
 
