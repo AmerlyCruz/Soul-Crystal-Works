@@ -8,6 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeToggle = document.getElementById('themeToggle');
   const themeColorMeta = document.querySelector('meta[name="theme-color"]');
   const leadModal = document.getElementById('leadReferralModal');
+  const projectToggleButtons = document.querySelectorAll('[data-project-toggle]');
+  const legalModal = document.getElementById('legalModal');
+  const legalModalEyebrow = document.getElementById('legalModalEyebrow');
+  const legalModalTitle = document.getElementById('legalModalTitle');
+  const legalModalContent = document.getElementById('legalModalContent');
+  const legalTriggerButtons = document.querySelectorAll('[data-legal-trigger]');
+  const closeLegalButtons = document.querySelectorAll('[data-close-legal-modal]');
   const leadEyebrow = document.getElementById('leadReferralEyebrow');
   const leadTitle = document.getElementById('leadReferralTitle');
   const leadCopy = document.getElementById('leadReferralCopy');
@@ -39,6 +46,38 @@ document.addEventListener('DOMContentLoaded', () => {
       copy: 'Diseño webs elegantes, rápidas y pensadas para comunicar mejor y convertir más. Si tu negocio necesita una presencia digital más fuerte, hablemos.',
       whatsappText: 'Hola, vengo desde tu portafolio y quiero una pagina web para mi negocio.',
       ctaLabel: 'Quiero una para mi negocio'
+    }
+  };
+
+  const legalModalContentMap = {
+    terms: {
+      eyebrow: 'Marco legal informativo',
+      title: 'Términos y condiciones',
+      html: `
+        <p>Este contenido funciona como una referencia informativa mientras se publica la versión legal definitiva de Soul Crystal Works.</p>
+        <p>Cada proyecto se cotiza de forma individual en función del alcance, complejidad visual, estructura necesaria, integraciones y nivel de personalización requerido.</p>
+        <ul>
+          <li>El inicio del trabajo queda sujeto a la validación del alcance, calendario y condiciones comerciales acordadas para el proyecto.</li>
+          <li>Las rondas de revisión se definen antes de comenzar para mantener el proceso ordenado y evitar desviaciones fuera del alcance aprobado.</li>
+          <li>Los materiales, textos, imágenes o accesos que deba aportar el cliente pueden afectar la planificación si no se reciben en el plazo previsto.</li>
+          <li>La entrega final, publicación o cesión editable se realiza según la etapa pactada y después de la aprobación correspondiente.</li>
+        </ul>
+        <p>Al contratar o utilizar estos servicios se entiende aceptada esta versión informativa de términos y condiciones hasta la publicación del documento legal definitivo.</p>
+      `
+    },
+    delivery: {
+      eyebrow: 'Planificación estimada',
+      title: 'Plazos y entregas',
+      html: `
+        <p>Los tiempos publicados son estimaciones iniciales basadas en los niveles de servicio presentados en el sitio.</p>
+        <ul>
+          <li>Landing Page: entre 2 y 4 días para una presencia digital enfocada en captación y presentación comercial.</li>
+          <li>E-commerce: entre 5 y 12 días para catálogo, categorías y flujo de pedidos por WhatsApp.</li>
+          <li>Sistema Web Completo: entre 2 y 4 semanas para procesos más amplios, carrito, checkout, gestión o paneles.</li>
+        </ul>
+        <p>Estas referencias pueden ajustarse según rondas de revisión, complejidad visual, integraciones externas, volumen de contenido y tiempos de respuesta del cliente.</p>
+        <p>La fecha concreta de entrega se confirma una vez aprobado el alcance final y validadas las condiciones del proyecto.</p>
+      `
     }
   };
 
@@ -266,6 +305,48 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.remove('lead-modal-open');
   }
 
+  function initializeProjectToggles() {
+    if (!projectToggleButtons.length) return;
+
+    projectToggleButtons.forEach((button) => {
+      const targetId = button.getAttribute('aria-controls');
+      const detailPanel = targetId ? document.getElementById(targetId) : null;
+      if (!detailPanel) return;
+
+      detailPanel.hidden = true;
+      button.setAttribute('aria-expanded', 'false');
+      button.textContent = 'Ver detalles';
+
+      button.addEventListener('click', () => {
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', String(!isExpanded));
+        button.textContent = isExpanded ? 'Ver detalles' : 'Ocultar detalles';
+        detailPanel.hidden = isExpanded;
+      });
+    });
+  }
+
+  function openLegalModal(type = 'terms') {
+    if (!legalModal || !legalModalContent) return;
+
+    const content = legalModalContentMap[type] || legalModalContentMap.terms;
+    if (legalModalEyebrow) legalModalEyebrow.textContent = content.eyebrow;
+    if (legalModalTitle) legalModalTitle.textContent = content.title;
+    legalModalContent.innerHTML = content.html;
+
+    legalModal.hidden = false;
+    legalModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('legal-modal-open');
+    trackEvent('legal_modal_open', { type });
+  }
+
+  function closeLegalModal() {
+    if (!legalModal) return;
+    legalModal.hidden = true;
+    legalModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('legal-modal-open');
+  }
+
   window.abrirModal = function abrirModal(ref = 'default', origin = 'portfolio-detail') {
     openLeadModal(ref, origin);
   };
@@ -273,6 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeTheme();
   initializeSparkleCursor();
   initializeComparisonToggle();
+  initializeProjectToggles();
 
   if (navToggle && navMenu) {
     navToggle.addEventListener('click', () => {
@@ -308,6 +390,16 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', closeLeadModal);
   });
 
+  legalTriggerButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      openLegalModal(button.dataset.legalTrigger || 'terms');
+    });
+  });
+
+  closeLegalButtons.forEach((button) => {
+    button.addEventListener('click', closeLegalModal);
+  });
+
   trackedElements.forEach((element) => {
     element.addEventListener('click', () => {
       trackEvent(element.dataset.track || 'interaction', {
@@ -325,9 +417,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  if (legalModal) {
+    legalModal.addEventListener('click', (event) => {
+      if (event.target === legalModal || event.target.hasAttribute('data-close-legal-modal')) {
+        closeLegalModal();
+      }
+    });
+  }
+
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       closeLeadModal();
+      closeLegalModal();
       if (navMenu?.classList.contains('is-open')) {
         navMenu.classList.remove('is-open');
         navToggle?.setAttribute('aria-expanded', 'false');

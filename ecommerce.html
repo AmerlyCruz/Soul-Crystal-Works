@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260327-9">
+  <link rel="stylesheet" href="styles.css?v=20260328-11">
 </head>
 <body>
   <header class="site-header">
@@ -58,8 +58,43 @@
     </section>
     <div class="service-page__footer-nav"><a href="index.html#servicios" class="back-link">Volver atrás</a><span>El logo arriba siempre te devuelve al inicio.</span></div>
   </main>
-  <footer class="site-footer"><p>Soul Crystal Works</p><span>Diseño web con dirección visual sólida y enfoque comercial real.</span></footer>
+  <footer class="site-footer">
+    <div class="site-footer__grid section-shell">
+      <section class="site-footer__column">
+        <p class="site-footer__brand">Soul Crystal Works</p>
+        <span class="site-footer__copy">Diseño web con dirección visual sólida, estructura clara y enfoque comercial real.</span>
+      </section>
+
+      <section class="site-footer__column">
+        <h3>Nosotros</h3>
+        <a href="about.html" class="site-footer__link">Sobre Soul Crystal Works</a>
+      </section>
+
+      <section class="site-footer__column">
+        <h3>Redes sociales</h3>
+        <a href="https://wa.me/18493990014?text=Hola%2C%20quiero%20informacion%20sobre%20un%20ecommerce" target="_blank" rel="noopener" class="site-footer__link" onclick="trackWhatsApp('ecommerce-footer-whatsapp')">WhatsApp</a>
+        <a href="https://www.instagram.com/soulcrystalwebs?igsh=anc3Z25yNHQzM3F3&utm_source=qr" target="_blank" rel="noopener" class="site-footer__link" data-track="social_click" data-track-label="instagram-ecommerce-footer">Instagram</a>
+      </section>
+
+      <section class="site-footer__column">
+        <h3>Legal</h3>
+        <button type="button" class="site-footer__link site-footer__link--button" data-legal-trigger="terms">Términos y condiciones</button>
+        <button type="button" class="site-footer__link site-footer__link--button" data-legal-trigger="delivery">Plazos y entregas</button>
+        <span class="site-footer__legal-note">Al usar estos servicios aceptas los términos y condiciones vigentes.</span>
+      </section>
+    </div>
+    <div class="site-footer__meta">© 2026 Soul Crystal Works</div>
+  </footer>
   <a href="https://wa.me/18493990014?text=Hola%2C%20quiero%20cotizar%20un%20ecommerce" target="_blank" rel="noopener" class="floating-cta" onclick="trackWhatsApp('ecommerce-floating-cta')">WhatsApp</a>
-  <script src="script.js?v=20260327-9"></script>
+  <div id="legalModal" class="legal-modal" hidden aria-hidden="true">
+    <div class="legal-modal__backdrop" data-close-legal-modal></div>
+    <div class="legal-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+      <button type="button" class="legal-modal__close" data-close-legal-modal aria-label="Cerrar información legal">×</button>
+      <p id="legalModalEyebrow" class="legal-modal__eyebrow">Información legal</p>
+      <h2 id="legalModalTitle">Términos y condiciones</h2>
+      <div id="legalModalContent" class="legal-modal__content"></div>
+    </div>
+  </div>
+  <script src="script.js?v=20260328-11"></script>
 </body>
 </html>
