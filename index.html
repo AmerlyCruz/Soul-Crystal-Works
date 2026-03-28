@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260327-2">
+  <link rel="stylesheet" href="styles.css?v=20260327-3">
 </head>
 <body>
   <header class="site-header">
@@ -63,23 +63,193 @@
       </div>
 
       <div class="hero__panel">
-        <article class="signal-card signal-card--primary">
-          <span class="signal-card__eyebrow">Lo esencial</span>
-          <h2>Menos ruido, más claridad y una imagen más sólida para tu negocio.</h2>
-          <div class="signal-grid">
-            <div>
-              <strong>Landing pages</strong>
-              <span>Para servicios, campañas y marcas personales</span>
-            </div>
-            <div>
-              <strong>E-commerce</strong>
-              <span>Catálogo, carrito y compra más clara</span>
-            </div>
-            <div>
+        <article id="servicios" class="signal-card signal-card--primary service-showcase">
+          <span class="signal-card__eyebrow">Servicios</span>
+          <h2>Elige el nivel o la categoría que mejor encaja con tu negocio.</h2>
+
+          <div class="service-tabs" role="tablist" aria-label="Niveles de servicio">
+            <button type="button" class="service-tab is-active" role="tab" id="service-tab-landing" aria-controls="service-panel-landing" aria-selected="true" data-service-target="landing" data-track="service_tab" data-track-label="landing-page">
+              <span class="service-tab__level">Nivel 1</span>
+              <strong>Landing Page</strong>
+            </button>
+            <button type="button" class="service-tab" role="tab" id="service-tab-ecommerce" aria-controls="service-panel-ecommerce" aria-selected="false" data-service-target="ecommerce" data-track="service_tab" data-track-label="ecommerce">
+              <span class="service-tab__level">Nivel 3</span>
+              <strong>Ecommerce</strong>
+            </button>
+            <button type="button" class="service-tab" role="tab" id="service-tab-system" aria-controls="service-panel-system" aria-selected="false" data-service-target="system" data-track="service_tab" data-track-label="sistema-web">
+              <span class="service-tab__level">Nivel 5</span>
+              <strong>Sistema Web</strong>
+            </button>
+            <button type="button" class="service-tab" role="tab" id="service-tab-redesign" aria-controls="service-panel-redesign" aria-selected="false" data-service-target="redesign" data-track="service_tab" data-track-label="rediseño">
+              <span class="service-tab__level">Categoría</span>
               <strong>Rediseño</strong>
-              <span>Si tu web actual se siente floja o desordenada</span>
-            </div>
+            </button>
           </div>
+
+          <div class="service-panels">
+            <section class="service-panel is-active" id="service-panel-landing" role="tabpanel" aria-labelledby="service-tab-landing" data-service-panel="landing">
+              <div class="service-panel__header">
+                <span class="service-panel__badge service-panel__badge--green">Landing Page · Nivel 1</span>
+                <p class="service-panel__quote">Para existir online y captar clientes.</p>
+              </div>
+              <div class="service-panel__grid">
+                <div class="service-panel__block">
+                  <h3>Qué incluye</h3>
+                  <ul class="service-panel__list">
+                    <li>Landing page de una sola página</li>
+                    <li>Sección principal o hero</li>
+                    <li>Sección sobre el negocio</li>
+                    <li>Servicios</li>
+                    <li>Botón de WhatsApp</li>
+                    <li>Redes sociales</li>
+                    <li>Diseño responsive para móvil y desktop</li>
+                  </ul>
+                </div>
+                <div class="service-panel__block">
+                  <h3>Qué no incluye</h3>
+                  <ul class="service-panel__list service-panel__list--muted">
+                    <li>Catálogo</li>
+                    <li>Productos</li>
+                    <li>Lógica de pedidos</li>
+                    <li>Panel admin</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="service-panel__meta">
+                <div>
+                  <span class="service-panel__meta-label">Tiempo de entrega</span>
+                  <strong>2 a 4 días</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="service-panel" id="service-panel-ecommerce" role="tabpanel" aria-labelledby="service-tab-ecommerce" data-service-panel="ecommerce" hidden>
+              <div class="service-panel__header">
+                <span class="service-panel__badge service-panel__badge--gold">Ecommerce · Nivel 3</span>
+                <p class="service-panel__quote">Para mostrar productos y vender por WhatsApp.</p>
+              </div>
+              <div class="service-panel__grid">
+                <div class="service-panel__block">
+                  <h3>Qué incluye</h3>
+                  <ul class="service-panel__list">
+                    <li>Todo lo del nivel 1</li>
+                    <li>Catálogo de productos</li>
+                    <li>Categorías</li>
+                    <li>Ficha de producto</li>
+                    <li>Botón de pedido por WhatsApp</li>
+                    <li>Diseño más trabajado</li>
+                    <li>Testimonios o FAQ opcional</li>
+                  </ul>
+                </div>
+                <div class="service-panel__block">
+                  <h3>Qué no incluye</h3>
+                  <ul class="service-panel__list service-panel__list--muted">
+                    <li>Carrito</li>
+                    <li>Checkout automático</li>
+                    <li>Pagos en línea</li>
+                    <li>Panel admin</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="service-panel__meta">
+                <div>
+                  <span class="service-panel__meta-label">Tiempo de entrega</span>
+                  <strong>5 a 12 días</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="service-panel" id="service-panel-system" role="tabpanel" aria-labelledby="service-tab-system" data-service-panel="system" hidden>
+              <div class="service-panel__header">
+                <span class="service-panel__badge service-panel__badge--red">Sistema Web Completo · Nivel 5</span>
+                <p class="service-panel__quote">Para operar el negocio online de verdad.</p>
+              </div>
+              <div class="service-panel__grid">
+                <div class="service-panel__block">
+                  <h3>Qué incluye</h3>
+                  <ul class="service-panel__list">
+                    <li>Todo lo del nivel 3</li>
+                    <li>Carrito de compras</li>
+                    <li>Checkout</li>
+                    <li>Base de datos</li>
+                    <li>Panel administrativo</li>
+                    <li>Gestión de productos</li>
+                    <li>Gestión de pedidos</li>
+                    <li>Autenticación o login</li>
+                    <li>Contenido dinámico</li>
+                    <li>Integraciones según el caso</li>
+                  </ul>
+                </div>
+                <div class="service-panel__block">
+                  <h3>Ideal para</h3>
+                  <ul class="service-panel__list">
+                    <li>Tiendas serias</li>
+                    <li>Negocios que quieren escalar</li>
+                    <li>Marcas que quieren automatizar ventas</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="service-panel__meta">
+                <div>
+                  <span class="service-panel__meta-label">Tiempo de entrega</span>
+                  <strong>2 a 4 semanas</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="service-panel" id="service-panel-redesign" role="tabpanel" aria-labelledby="service-tab-redesign" data-service-panel="redesign" hidden>
+              <div class="service-panel__header">
+                <span class="service-panel__badge service-panel__badge--violet">Rediseño</span>
+                <p class="service-panel__quote">Para mejorar una web existente y conectarla con tus niveles 1, 3 y 5.</p>
+              </div>
+              <div class="service-panel__grid">
+                <div class="service-panel__block">
+                  <h3>Qué incluye</h3>
+                  <ul class="service-panel__list">
+                    <li>Análisis de la web actual</li>
+                    <li>Mejora visual o UI</li>
+                    <li>Mejora de estructura o UX</li>
+                    <li>Optimización móvil</li>
+                    <li>Mejora de textos en estructura</li>
+                    <li>Mejores llamados a la acción</li>
+                    <li>Optimización básica de velocidad</li>
+                  </ul>
+                </div>
+                <div class="service-panel__block">
+                  <h3>Opcional, se cobra aparte</h3>
+                  <ul class="service-panel__list service-panel__list--muted">
+                    <li>Migración completa a tu sistema</li>
+                    <li>Agregar catálogo</li>
+                    <li>Agregar pedidos por WhatsApp</li>
+                    <li>Convertirla en tienda</li>
+                    <li>SEO</li>
+                    <li>Integraciones</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="service-panel__meta service-panel__meta--split">
+                <div>
+                  <span class="service-panel__meta-label">Precio sugerido</span>
+                  <strong>Rediseño básico</strong>
+                  <span>Solo mejora visual y estructura</span>
+                </div>
+                <div>
+                  <span class="service-panel__meta-label">Precio sugerido</span>
+                  <strong>Rediseño + mejora funcional</strong>
+                  <span>Cuando ya entran cambios reales o lógica</span>
+                </div>
+                <div>
+                  <span class="service-panel__meta-label">Tiempo</span>
+                  <strong>5 a 12 días</strong>
+                  <span>Dependiendo del alcance</span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <a href="https://wa.me/18493990014?text=Hola%2C%20quiero%20cotizar%20uno%20de%20tus%20niveles%20de%20servicio" target="_blank" rel="noopener" class="button button-primary service-panel__cta" onclick="trackWhatsApp('services-cta')" data-track="cta_click" data-track-label="services-cta">
+            Cotizar este servicio
+          </a>
         </article>
       </div>
     </section>
@@ -132,28 +302,6 @@
       </div>
     </section>
 
-    <section id="servicios" class="services section-shell reveal">
-      <div class="section-heading section-heading--narrow">
-        <p class="section-kicker">Servicios</p>
-        <h2>Lo que puedo hacer por tu presencia digital.</h2>
-      </div>
-
-      <div class="service-grid">
-        <article class="service-card">
-          <h3>Landing pages</h3>
-          <p>Páginas para servicios o campañas con estructura clara y mejor presentación.</p>
-        </article>
-        <article class="service-card">
-          <h3>Tiendas online</h3>
-          <p>Experiencias de compra más limpias, confiables y fáciles de recorrer.</p>
-        </article>
-        <article class="service-card">
-          <h3>Rediseño visual</h3>
-          <p>Si tu página actual se siente genérica o pesada, la puedo simplificar y elevar.</p>
-        </article>
-      </div>
-    </section>
-
     <section id="contacto" class="contact section-shell reveal">
       <div class="contact-card">
         <div class="contact-card__copy">
@@ -196,6 +344,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20260327-2"></script>
+  <script src="script.js?v=20260327-3"></script>
 </body>
 </html>
