@@ -3,12 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const trackedElements = document.querySelectorAll('[data-track]');
   const navToggle = document.getElementById('navToggle');
   const navMenu = document.getElementById('navMenu');
+  const themeToggle = document.getElementById('themeToggle');
   const leadModal = document.getElementById('leadReferralModal');
   const leadEyebrow = document.getElementById('leadReferralEyebrow');
   const leadTitle = document.getElementById('leadReferralTitle');
   const leadCopy = document.getElementById('leadReferralCopy');
   const leadCta = document.getElementById('leadReferralCta');
   const closeLeadButtons = document.querySelectorAll('[data-close-lead-modal]');
+  const THEME_STORAGE_KEY = 'scw-theme';
 
   const referralMessages = {
     beautyfast: {
@@ -118,6 +120,64 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function applyTheme(theme) {
+    const nextTheme = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', nextTheme);
+
+    if (themeToggle) {
+      const isDark = nextTheme === 'dark';
+      themeToggle.setAttribute('aria-pressed', String(isDark));
+      themeToggle.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+      const label = themeToggle.querySelector('.theme-toggle__label');
+      const icon = themeToggle.querySelector('.theme-toggle__icon');
+      if (label) label.textContent = isDark ? 'Modo claro' : 'Modo oscuro';
+      if (icon) icon.textContent = isDark ? '☀' : '◐';
+    }
+  }
+
+  function initializeTheme() {
+    const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    applyTheme(storedTheme || 'light');
+
+    themeToggle?.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+      applyTheme(nextTheme);
+      trackEvent('theme_toggle', { theme: nextTheme });
+    });
+  }
+
+  function initializeSparkleCursor() {
+    if (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    const layer = document.createElement('div');
+    layer.className = 'sparkle-layer';
+    document.body.appendChild(layer);
+
+    let lastSparkleAt = 0;
+
+    document.addEventListener('pointermove', (event) => {
+      const now = Date.now();
+      if (now - lastSparkleAt < 22) return;
+      lastSparkleAt = now;
+
+      for (let index = 0; index < 2; index += 1) {
+        const sparkle = document.createElement('span');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = `${event.clientX + (Math.random() * 18 - 9)}px`;
+        sparkle.style.top = `${event.clientY + (Math.random() * 18 - 9)}px`;
+        sparkle.style.setProperty('--sparkle-size', `${Math.round(Math.random() * 7 + 8)}px`);
+        sparkle.style.setProperty('--sparkle-hue', `${Math.round(Math.random() * 50 + 235)}deg`);
+        sparkle.style.setProperty('--sparkle-rotate', `${Math.round(Math.random() * 90)}deg`);
+        layer.appendChild(sparkle);
+        window.setTimeout(() => sparkle.remove(), 720);
+      }
+    });
+  }
+
   function shouldAutoOpenReferralModal(ref, source, campaign) {
     return campaign === 'project-lead' && ref === 'beautyfast' && source === 'footer';
   }
@@ -150,6 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
   window.abrirModal = function abrirModal(ref = 'default', origin = 'portfolio-detail') {
     openLeadModal(ref, origin);
   };
+
+  initializeTheme();
+  initializeSparkleCursor();
 
   if (navToggle && navMenu) {
     navToggle.addEventListener('click', () => {

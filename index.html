@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,9 +27,13 @@
       <div id="navMenu" class="nav-menu">
         <a href="#proyectos">Proyectos</a>
         <a href="#servicios">Servicios</a>
-        <a href="#proceso">Proceso</a>
         <a href="#contacto">Contacto</a>
       </div>
+
+      <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false" aria-label="Cambiar a modo oscuro">
+        <span class="theme-toggle__icon" aria-hidden="true">◐</span>
+        <span class="theme-toggle__label">Modo oscuro</span>
+      </button>
 
       <a href="https://wa.me/18493990014?text=Hola%2C%20quiero%20una%20pagina%20web%20para%20mi%20negocio" target="_blank" rel="noopener" class="button button-primary header-cta" onclick="trackWhatsApp('header-cta')" data-track="cta_click" data-track-label="header-cta">
         Quiero una web premium
@@ -40,9 +44,9 @@
   <main>
     <section id="hero" class="hero section-shell reveal">
       <div class="hero__copy">
-        <p class="section-kicker">Dirección digital premium</p>
-        <h1>Diseño experiencias web que elevan tu marca y convierten interés en ventas.</h1>
-        <p class="hero__lead">Creo landing pages, tiendas online y webs de negocio para marcas que no quieren verse genéricas. El objetivo es que tu presencia digital comunique nivel, ordene tu oferta y mueva al cliente correcto a dar el siguiente paso.</p>
+        <p class="section-kicker">Diseño web para negocio</p>
+        <h1>Webs claras, bonitas y listas para vender mejor.</h1>
+        <p class="hero__lead">Diseño páginas y tiendas online para negocios que necesitan una presencia más cuidada, más simple de entender y más fácil de convertir en contacto o venta.</p>
 
         <div class="hero__actions">
           <a href="https://wa.me/18493990014?text=Hola%2C%20quiero%20cotizar%20una%20pagina%20web%20con%20Soul%20Crystal%20Works" target="_blank" rel="noopener" class="button button-primary button-large" onclick="trackWhatsApp('hero-cta')" data-track="cta_click" data-track-label="hero-cta">
@@ -52,16 +56,16 @@
         </div>
 
         <ul class="hero__points">
-          <li>Dirección visual alineada a tu marca y a tu cliente ideal</li>
-          <li>Experiencia responsive con estructura comercial clara</li>
-          <li>CTA pensados para generar contacto, confianza y cierre</li>
+          <li>Diseño visual alineado a tu marca</li>
+          <li>Experiencia responsive y ordenada</li>
+          <li>CTA pensados para generar contacto</li>
         </ul>
       </div>
 
       <div class="hero__panel">
         <article class="signal-card signal-card--primary">
-          <span class="signal-card__eyebrow">Lo que construyo</span>
-          <h2>Webs que no solo se ven bien: posicionan, persuaden y ayudan a cerrar.</h2>
+          <span class="signal-card__eyebrow">Lo esencial</span>
+          <h2>Menos ruido, más claridad y una imagen más sólida para tu negocio.</h2>
           <div class="signal-grid">
             <div>
               <strong>Landing pages</strong>
@@ -69,42 +73,22 @@
             </div>
             <div>
               <strong>E-commerce</strong>
-              <span>Catalogo, carrito, checkout y una experiencia más pulida de compra</span>
+              <span>Catálogo, carrito y compra más clara</span>
             </div>
             <div>
-              <strong>Experiencias a medida</strong>
-              <span>Flujos pensados para contacto, confianza y conversión</span>
+              <strong>Rediseño</strong>
+              <span>Si tu web actual se siente floja o desordenada</span>
             </div>
           </div>
         </article>
-
-        <article class="signal-card signal-card--secondary">
-          <span class="signal-card__eyebrow">Enfoque</span>
-          <p>No vendo una pagina bonita sin intención. Diseño una herramienta digital que mejore percepción, ordene tu mensaje y acompañe una decisión comercial real.</p>
-        </article>
       </div>
-    </section>
-
-    <section class="trust-strip section-shell reveal" aria-label="Beneficios principales">
-      <article class="trust-item">
-        <strong>Diseño con criterio</strong>
-        <span>Jerarquía visual clara, identidad sólida y una percepción de marca más alta.</span>
-      </article>
-      <article class="trust-item">
-        <strong>Enfoque comercial</strong>
-        <span>El recorrido del usuario está diseñado para reducir fricción y provocar contacto.</span>
-      </article>
-      <article class="trust-item">
-        <strong>Ejecución profesional</strong>
-        <span>Responsive, rápida y lista para presentarte con más nivel ante tus clientes.</span>
-      </article>
     </section>
 
     <section id="proyectos" class="portfolio section-shell reveal">
       <div class="section-heading">
         <p class="section-kicker">Proyectos seleccionados</p>
-        <h2>Casos donde diseño, estructura y experiencia trabajan con intención comercial.</h2>
-        <p>Cada proyecto responde a una necesidad distinta, pero todos comparten lo mismo: claridad estratégica, presencia visual y una mejor ruta hacia la conversión.</p>
+        <h2>Trabajos reales con enfoque visual y comercial.</h2>
+        <p>Una muestra corta de cómo traduzco una idea de negocio en una experiencia más clara y mejor presentada.</p>
       </div>
 
       <div class="project-grid">
@@ -115,11 +99,10 @@
           <div class="project-card__body">
             <span class="project-card__tag">E-commerce de belleza</span>
             <h3>El Secreto de Aris</h3>
-            <p>Tienda online con identidad más cuidada, onboarding, búsqueda, carrito y checkout para que la experiencia se sienta más confiable, más deseable y más lista para vender.</p>
+            <p>Tienda online con una experiencia más cuidada, visualmente más fuerte y pensada para vender con menos fricción.</p>
             <ul class="project-card__list">
-              <li>Catalogo y busqueda integrados</li>
-              <li>Experiencia de compra más clara</li>
-              <li>Microdetalles de interfaz para elevar marca</li>
+              <li>Catálogo y búsqueda integrados</li>
+              <li>Compra más clara y confiable</li>
             </ul>
             <div class="project-card__actions">
               <a href="https://soulcrystal.netlify.app/" target="_blank" rel="noopener" class="button button-secondary" data-track="project_view" data-track-label="beautyfast-view">Ver proyecto</a>
@@ -135,11 +118,10 @@
           <div class="project-card__body">
             <span class="project-card__tag">Interfaz funcional</span>
             <h3>Flexiway</h3>
-            <p>Una interfaz más operativa y directa, pensada para que el usuario entienda rápido lo que tiene delante y pueda interactuar sin ruido innecesario.</p>
+            <p>Una interfaz más directa y limpia, enfocada en que el usuario entienda rápido y actúe sin confusión.</p>
             <ul class="project-card__list">
-              <li>Lectura más inmediata de la interfaz</li>
+              <li>Lectura inmediata de la interfaz</li>
               <li>Diseño limpio y funcional</li>
-              <li>Base adaptable a servicios o sistemas internos</li>
             </ul>
             <div class="project-card__actions">
               <a href="https://darling-moxie-bbe1ae.netlify.app/" target="_blank" rel="noopener" class="button button-secondary" data-track="project_view" data-track-label="flexiway-view">Ver proyecto</a>
@@ -153,98 +135,22 @@
     <section id="servicios" class="services section-shell reveal">
       <div class="section-heading section-heading--narrow">
         <p class="section-kicker">Servicios</p>
-        <h2>Lo que puedo diseñar para elevar la forma en que tu negocio se presenta y vende.</h2>
+        <h2>Lo que puedo hacer por tu presencia digital.</h2>
       </div>
 
       <div class="service-grid">
         <article class="service-card">
-          <h3>Landing pages de conversion</h3>
-          <p>Páginas de servicios, marcas personales o campañas con narrativa más refinada, CTA visibles y una lectura más fuerte de la oferta.</p>
+          <h3>Landing pages</h3>
+          <p>Páginas para servicios o campañas con estructura clara y mejor presentación.</p>
         </article>
         <article class="service-card">
           <h3>Tiendas online</h3>
-          <p>Experiencias de compra más claras, con foco en navegación, producto, confianza y decisión.</p>
+          <p>Experiencias de compra más limpias, confiables y fáciles de recorrer.</p>
         </article>
         <article class="service-card">
           <h3>Rediseño visual</h3>
-          <p>Si tu página actual se siente débil o genérica, puedo replantearla para que tu negocio se perciba más premium, más claro y más sólido.</p>
+          <p>Si tu página actual se siente genérica o pesada, la puedo simplificar y elevar.</p>
         </article>
-        <article class="service-card">
-          <h3>Flujos comerciales</h3>
-          <p>WhatsApp, formularios, CTA y recorridos de usuario para que la web acompañe mejor tu proceso de captación y cierre.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="proceso" class="process section-shell reveal">
-      <div class="section-heading section-heading--narrow">
-        <p class="section-kicker">Proceso</p>
-        <h2>Trabajo con estructura para que el resultado se vea intencional, sólido y profesional.</h2>
-      </div>
-
-      <div class="process-grid">
-        <article class="process-step">
-          <span class="process-step__number">01</span>
-          <h3>Estrategia</h3>
-          <p>Definimos qué vendes, a quién hablas y qué acción debe provocar la experiencia.</p>
-        </article>
-        <article class="process-step">
-          <span class="process-step__number">02</span>
-          <h3>Direccion visual</h3>
-          <p>Traduzco tu marca a una interfaz más sólida, coherente y visualmente memorable.</p>
-        </article>
-        <article class="process-step">
-          <span class="process-step__number">03</span>
-          <h3>Construccion</h3>
-          <p>Desarrollo una experiencia limpia, responsive y más fácil de recorrer con confianza.</p>
-        </article>
-        <article class="process-step">
-          <span class="process-step__number">04</span>
-          <h3>Conversion</h3>
-          <p>Integro CTA, contacto y puntos de decisión para que la página empuje acción real.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="proof section-shell reveal">
-      <article class="proof-card">
-        <p class="section-kicker">Valor real</p>
-        <h2>Una presencia digital mejor diseñada cambia cómo te perciben, cuánto te creen y qué tan rápido te escriben.</h2>
-        <div class="proof-grid">
-          <div>
-            <strong>Más claridad</strong>
-            <span>Tu oferta se entiende más rápido y con menos ruido.</span>
-          </div>
-          <div>
-            <strong>Más confianza</strong>
-            <span>Una mejor experiencia eleva la percepción de tu marca.</span>
-          </div>
-          <div>
-            <strong>Más intención</strong>
-            <span>La página guía al usuario a escribirte o comprar con más decisión.</span>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <section class="faq section-shell reveal">
-      <div class="section-heading section-heading--narrow">
-        <p class="section-kicker">FAQ</p>
-        <h2>Preguntas normales antes de empezar.</h2>
-      </div>
-      <div class="faq-list">
-        <details class="faq-item">
-          <summary>¿Trabajas landing pages y también tiendas?</summary>
-          <p>Sí. Puedo trabajar desde páginas de presentación y servicios hasta tiendas online con flujo de compra más completo.</p>
-        </details>
-        <details class="faq-item">
-          <summary>¿Puedes rediseñar una web que ya existe?</summary>
-          <p>Sí. Muchas veces el problema no es la oferta, sino cómo se está presentando. Un rediseño estratégico puede cambiar mucho la percepción.</p>
-        </details>
-        <details class="faq-item">
-          <summary>¿Solo diseñas o también piensas en ventas?</summary>
-          <p>El enfoque comercial es parte central del trabajo. La estética importa, pero debe estar al servicio de una acción concreta.</p>
-        </details>
       </div>
     </section>
 
@@ -252,8 +158,8 @@
       <div class="contact-card">
         <div class="contact-card__copy">
           <p class="section-kicker">Contacto</p>
-          <h2>Si tu negocio necesita verse más sólido y vender mejor, hablemos.</h2>
-          <p>Cuéntame qué estás construyendo y te diré qué tipo de experiencia tendría más sentido para elevar tu marca y mover clientes.</p>
+          <h2>Si tu negocio necesita una web más clara y mejor presentada, hablemos.</h2>
+          <p>Cuéntame qué necesitas y te diré cómo lo enfocaría para que se vea mejor y convierta mejor.</p>
         </div>
         <div class="contact-card__actions">
           <a href="https://wa.me/18493990014?text=Hola%2C%20vi%20tu%20portafolio%20y%20quiero%20informacion%20sobre%20una%20pagina%20web" target="_blank" rel="noopener" class="button button-primary button-large" onclick="trackWhatsApp('contact-cta')" data-track="cta_click" data-track-label="contact-cta">
