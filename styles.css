@@ -772,8 +772,8 @@ a {
 
 .service-link-card {
   display: grid;
-  gap: 8px;
-  padding: 20px;
+  gap: 6px;
+  padding: 18px 20px;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.68);
@@ -811,7 +811,7 @@ a {
 }
 
 .service-link-card__meta {
-  margin-top: 8px;
+  margin-top: 4px;
   color: var(--heading);
   font-weight: 800;
 }
