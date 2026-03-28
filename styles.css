@@ -1,18 +1,18 @@
 :root {
-  --bg: #f5f1ff;
-  --bg-soft: #ece7ff;
+  --bg: #f1ebff;
+  --bg-soft: #e4dcff;
   --surface: rgba(255, 255, 255, 0.74);
   --surface-strong: rgba(255, 255, 255, 0.92);
-  --surface-light: rgba(119, 108, 255, 0.08);
-  --border: rgba(124, 114, 212, 0.16);
-  --text: #4f5579;
-  --muted: #73799d;
-  --heading: #7e81ff;
-  --accent: #9b8cff;
-  --accent-strong: #7fd8ff;
-  --accent-soft: rgba(155, 140, 255, 0.14);
-  --success: #7fd8ff;
-  --shadow: 0 24px 58px rgba(125, 120, 184, 0.16);
+  --surface-light: rgba(101, 88, 196, 0.09);
+  --border: rgba(96, 86, 176, 0.18);
+  --text: #363b5f;
+  --muted: #575e84;
+  --heading: #5f63cc;
+  --accent: #7469dc;
+  --accent-strong: #62b8e4;
+  --accent-soft: rgba(116, 105, 220, 0.14);
+  --success: #62b8e4;
+  --shadow: 0 24px 58px rgba(98, 90, 166, 0.18);
   --radius-xl: 32px;
   --radius-lg: 24px;
   --radius-md: 18px;
@@ -50,9 +50,9 @@ body {
   font-family: 'Manrope', sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at 10% 10%, rgba(157, 143, 255, 0.2), transparent 28%),
-    radial-gradient(circle at 85% 14%, rgba(127, 216, 255, 0.22), transparent 24%),
-    linear-gradient(180deg, #f7f4ff 0%, #f2eeff 46%, #eef2ff 100%);
+    radial-gradient(circle at 10% 10%, rgba(132, 116, 230, 0.18), transparent 28%),
+    radial-gradient(circle at 85% 14%, rgba(98, 184, 228, 0.18), transparent 24%),
+    linear-gradient(180deg, #f4f0ff 0%, #efebff 46%, #eaedff 100%);
   min-height: 100vh;
 }
 
@@ -78,7 +78,7 @@ body::before {
   width: 280px;
   height: 280px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(157, 143, 255, 0.24), transparent 70%);
+  background: radial-gradient(circle, rgba(116, 105, 220, 0.2), transparent 70%);
 }
 
 body::after {
@@ -87,7 +87,7 @@ body::after {
   width: 360px;
   height: 360px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(127, 216, 255, 0.18), transparent 70%);
+  background: radial-gradient(circle, rgba(98, 184, 228, 0.16), transparent 70%);
 }
 
 :root[data-theme='dark'] body::before {
@@ -142,8 +142,8 @@ a {
   top: 0;
   z-index: 20;
   backdrop-filter: blur(18px);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(247, 244, 255, 0.72));
-  border-bottom: 1px solid rgba(124, 114, 212, 0.1);
+  background: linear-gradient(180deg, rgba(249, 246, 255, 0.96), rgba(238, 233, 255, 0.84));
+  border-bottom: 1px solid rgba(96, 86, 176, 0.12);
 }
 
 :root[data-theme='dark'] .site-header {
@@ -195,7 +195,7 @@ a {
   padding: 0 14px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.78);
   color: var(--heading);
   font-size: 0.9rem;
   font-weight: 700;
@@ -255,8 +255,8 @@ a {
 
 .button-primary {
   color: #ffffff;
-  background: linear-gradient(135deg, #8d88ff, #7fd8ff);
-  box-shadow: 0 12px 28px rgba(141, 136, 255, 0.22);
+  background: linear-gradient(135deg, #7469dc, #62b8e4);
+  box-shadow: 0 12px 28px rgba(116, 105, 220, 0.24);
 }
 
 :root[data-theme='dark'] .button-primary {
@@ -267,7 +267,7 @@ a {
 
 .button-secondary {
   color: var(--heading);
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.72);
   border-color: var(--border);
 }
 
