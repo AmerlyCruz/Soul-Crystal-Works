@@ -726,6 +726,12 @@ a {
   box-shadow: 0 16px 34px rgba(34, 197, 94, 0.22);
 }
 
+body.lead-modal-open .floating-cta {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+}
+
 .lead-modal[hidden] {
   display: none !important;
 }
@@ -845,6 +851,10 @@ body.lead-modal-open {
 }
 
 @media (max-width: 860px) {
+  .site-header {
+    background: linear-gradient(180deg, rgba(8, 17, 32, 0.94), rgba(8, 17, 32, 0.82));
+  }
+
   .navbar {
     min-height: 74px;
   }
@@ -867,6 +877,8 @@ body.lead-modal-open {
     border-radius: 18px;
     background: rgba(8, 17, 32, 0.96);
     box-shadow: var(--shadow);
+    max-height: min(70vh, 360px);
+    overflow-y: auto;
   }
 
   .nav-menu.is-open {
@@ -909,6 +921,10 @@ body.lead-modal-open {
     --section-width: min(100vw - 24px, 1160px);
   }
 
+  .site-header {
+    top: 0;
+  }
+
   .referral-banner {
     top: auto;
     right: 12px;
@@ -935,15 +951,42 @@ body.lead-modal-open {
   }
 
   .navbar {
+    min-height: 62px;
     gap: 12px;
   }
 
   .logo {
-    font-size: 1.24rem;
+    max-width: min(54vw, 210px);
+    font-size: 1.08rem;
+    line-height: 1.05;
+  }
+
+  .nav-toggle {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    gap: 4px;
+  }
+
+  .nav-toggle span {
+    width: 17px;
+  }
+
+  .nav-menu {
+    left: 12px;
+    right: 12px;
+    top: calc(100% + 8px);
+    padding: 8px;
+    border-radius: 16px;
+  }
+
+  .nav-menu a {
+    padding: 11px 10px;
+    font-size: 0.94rem;
   }
 
   .hero {
-    padding: 92px 0 38px;
+    padding: 84px 0 38px;
   }
 
   .hero__lead,
@@ -999,21 +1042,36 @@ body.lead-modal-open {
   }
 
   .floating-cta {
+    left: auto;
     right: 12px;
-    left: 12px;
     bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-    min-height: 48px;
-    padding: 0 16px;
+    min-width: 0;
+    width: auto;
+    max-width: calc(100vw - 24px);
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 0.88rem;
+    box-shadow: 0 12px 26px rgba(34, 197, 94, 0.18);
   }
 
   .contact {
-    padding-bottom: 132px;
+    padding-bottom: 104px;
   }
 }
 
 @media (max-width: 420px) {
   .logo {
-    font-size: 1.08rem;
+    max-width: 172px;
+    font-size: 0.98rem;
+  }
+
+  .navbar {
+    min-height: 58px;
+  }
+
+  .nav-menu {
+    left: 10px;
+    right: 10px;
   }
 
   .referral-banner {
@@ -1035,5 +1093,13 @@ body.lead-modal-open {
 
   .lead-modal__copy {
     font-size: 0.94rem;
+  }
+
+  .floating-cta {
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    min-height: 42px;
+    padding: 0 12px;
+    font-size: 0.84rem;
   }
 }
