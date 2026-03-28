@@ -41,6 +41,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -713,6 +717,11 @@ a {
   font-weight: 800;
   flex-shrink: 0;
   transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.compare-toggle__icon {
+  width: 18px;
+  height: 18px;
 }
 
 .compare-toggle:hover,

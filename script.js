@@ -179,6 +179,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function initializeComparisonToggle() {
     if (!compareToggle || !compareGrid) return;
 
+    compareGrid.hidden = true;
+    compareToggle.setAttribute('aria-expanded', 'false');
+    compareToggle.setAttribute('aria-label', 'Ver comparación');
+
     compareToggle.addEventListener('click', () => {
       const isExpanded = compareToggle.getAttribute('aria-expanded') === 'true';
       compareToggle.setAttribute('aria-expanded', String(!isExpanded));

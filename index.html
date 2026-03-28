@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260327-6">
+  <link rel="stylesheet" href="styles.css?v=20260327-7">
 </head>
 <body>
   <header class="site-header">
@@ -101,7 +101,10 @@
                 <h3>Qué cambia entre Nivel 1, Nivel 3 y Nivel 5</h3>
               </div>
               <button id="compareToggle" class="compare-toggle" type="button" aria-expanded="false" aria-controls="serviceCompareGrid" aria-label="Ver comparación" data-track="comparison_toggle" data-track-label="comparison-toggle">
-                <span aria-hidden="true">◉</span>
+                <svg class="compare-toggle__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                </svg>
               </button>
             </div>
             <div id="serviceCompareGrid" class="service-compare__grid" hidden>
@@ -228,6 +231,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20260327-6"></script>
+  <script src="script.js?v=20260327-7"></script>
 </body>
 </html>
