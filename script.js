@@ -118,6 +118,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function shouldAutoOpenReferralModal(ref, source, campaign) {
+    return campaign === 'project-lead' && ref === 'beautyfast' && source === 'footer';
+  }
+
+  function clearReferralParamsFromUrl() {
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.delete('ref');
+    currentUrl.searchParams.delete('source');
+    currentUrl.searchParams.delete('campaign');
+    const nextUrl = `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`;
+    window.history.replaceState({}, document.title, nextUrl);
+  }
+
   function openLeadModal(ref = 'default', origin = 'auto') {
     if (!leadModal) return;
     setLeadContent(ref, origin);
@@ -211,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     title: document.title
   });
 
-  if (campaign === 'project-lead') {
+  if (shouldAutoOpenReferralModal(ref, source, campaign)) {
     const bannerKey = `scw-ref-banner:${ref}:${source}`;
     const modalKey = `scw-ref-modal:${ref}:${source}`;
 
@@ -224,6 +237,8 @@ document.addEventListener('DOMContentLoaded', () => {
       sessionStorage.setItem(modalKey, 'shown');
       window.setTimeout(() => openLeadModal(ref, source), 700);
     }
+
+    clearReferralParamsFromUrl();
   }
 });
 
