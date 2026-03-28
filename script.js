@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const revealElements = document.querySelectorAll('.reveal');
   const trackedElements = document.querySelectorAll('[data-track]');
+  const compareToggle = document.getElementById('compareToggle');
+  const compareGrid = document.getElementById('serviceCompareGrid');
   const navToggle = document.getElementById('navToggle');
   const navMenu = document.getElementById('navMenu');
   const themeToggle = document.getElementById('themeToggle');
@@ -174,6 +176,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function initializeComparisonToggle() {
+    if (!compareToggle || !compareGrid) return;
+
+    compareToggle.addEventListener('click', () => {
+      const isExpanded = compareToggle.getAttribute('aria-expanded') === 'true';
+      compareToggle.setAttribute('aria-expanded', String(!isExpanded));
+      compareToggle.setAttribute('aria-label', isExpanded ? 'Ver comparación' : 'Ocultar comparación');
+      compareGrid.hidden = isExpanded;
+    });
+  }
+
   function initializeSparkleCursor() {
     if (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
@@ -255,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initializeTheme();
   initializeSparkleCursor();
+  initializeComparisonToggle();
 
   if (navToggle && navMenu) {
     navToggle.addEventListener('click', () => {

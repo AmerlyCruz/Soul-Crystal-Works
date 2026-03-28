@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260327-5">
+  <link rel="stylesheet" href="styles.css?v=20260327-6">
 </head>
 <body>
   <header class="site-header">
@@ -72,34 +72,39 @@
               <span class="service-link-card__level">Nivel 1</span>
               <strong>Landing Page</strong>
               <p>Para existir online y captar clientes.</p>
-              <span class="service-link-card__meta">Quiero empezar simple</span>
+              <span class="service-link-card__meta">Ver pagina</span>
             </a>
             <a href="ecommerce.html" class="service-link-card service-link-card--gold" data-track="service_page_open" data-track-label="ecommerce">
               <span class="service-link-card__level">Nivel 3</span>
               <strong>Ecommerce</strong>
               <p>Para mostrar productos y vender por WhatsApp.</p>
-              <span class="service-link-card__meta">Quiero vender mis productos</span>
+              <span class="service-link-card__meta">Ver pagina</span>
             </a>
             <a href="sistema-web.html" class="service-link-card service-link-card--red" data-track="service_page_open" data-track-label="sistema-web">
               <span class="service-link-card__level">Nivel 5</span>
               <strong>Sistema Web Completo</strong>
               <p>Para operar el negocio online de verdad.</p>
-              <span class="service-link-card__meta">Quiero automatizar en serio</span>
+              <span class="service-link-card__meta">Ver pagina</span>
             </a>
             <a href="rediseno.html" class="service-link-card service-link-card--violet" data-track="service_page_open" data-track-label="rediseño">
               <span class="service-link-card__level">Categoría</span>
               <strong>Rediseño</strong>
               <p>Para mejorar una web existente y llevarla al nivel correcto.</p>
-              <span class="service-link-card__meta">Quiero mejorar mi web actual</span>
+              <span class="service-link-card__meta">Ver pagina</span>
             </a>
           </div>
 
           <div class="service-compare" aria-label="Comparación rápida entre niveles">
             <div class="service-compare__heading">
-              <span class="signal-card__eyebrow">Comparación rápida</span>
-              <h3>Qué cambia entre Nivel 1, Nivel 3 y Nivel 5</h3>
+              <div>
+                <span class="signal-card__eyebrow">Comparación rápida</span>
+                <h3>Qué cambia entre Nivel 1, Nivel 3 y Nivel 5</h3>
+              </div>
+              <button id="compareToggle" class="compare-toggle" type="button" aria-expanded="false" aria-controls="serviceCompareGrid" aria-label="Ver comparación" data-track="comparison_toggle" data-track-label="comparison-toggle">
+                <span aria-hidden="true">◉</span>
+              </button>
             </div>
-            <div class="service-compare__grid">
+            <div id="serviceCompareGrid" class="service-compare__grid" hidden>
               <article class="service-compare__card service-compare__card--green">
                 <span class="service-compare__level">Nivel 1</span>
                 <strong>Presencia digital</strong>
@@ -223,6 +228,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20260327-5"></script>
+  <script src="script.js?v=20260327-6"></script>
 </body>
 </html>
