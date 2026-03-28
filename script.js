@@ -3,16 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const trackedElements = document.querySelectorAll('[data-track]');
   const navToggle = document.getElementById('navToggle');
   const navMenu = document.getElementById('navMenu');
-  const referralBanner = document.getElementById('referralBanner');
-  const referralBannerText = document.getElementById('referralBannerText');
-  const closeReferralBanner = document.getElementById('closeReferralBanner');
   const leadModal = document.getElementById('leadReferralModal');
   const leadEyebrow = document.getElementById('leadReferralEyebrow');
   const leadTitle = document.getElementById('leadReferralTitle');
   const leadCopy = document.getElementById('leadReferralCopy');
   const leadCta = document.getElementById('leadReferralCta');
   const closeLeadButtons = document.querySelectorAll('[data-close-lead-modal]');
-  let referralBannerTimer = null;
 
   const referralMessages = {
     beautyfast: {
@@ -112,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function setLeadContent(ref, origin) {
     const config = getReferralConfig(ref);
 
-    if (referralBannerText) referralBannerText.textContent = config.banner;
     if (leadEyebrow) leadEyebrow.textContent = config.eyebrow;
     if (leadTitle) leadTitle.textContent = config.title;
     if (leadCopy) leadCopy.textContent = config.copy;
@@ -126,9 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function openLeadModal(ref = 'default', origin = 'auto') {
     if (!leadModal) return;
     setLeadContent(ref, origin);
-    if (window.matchMedia('(max-width: 640px)').matches) {
-      hideReferralBanner('modal-priority', false);
-    }
     trackEvent('lead_modal_open', { ref, origin });
     leadModal.hidden = false;
     leadModal.setAttribute('aria-hidden', 'false');
@@ -140,37 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
     leadModal.hidden = true;
     leadModal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('lead-modal-open');
-  }
-
-  function hideReferralBanner(reason = 'dismissed', shouldTrack = true) {
-    if (!referralBanner) return;
-    if (referralBannerTimer) {
-      window.clearTimeout(referralBannerTimer);
-      referralBannerTimer = null;
-    }
-    if (referralBanner.hidden) return;
-
-    referralBanner.hidden = true;
-
-    if (shouldTrack) {
-      trackEvent('referral_banner_closed', { reason });
-    }
-  }
-
-  function showReferralBanner(ref, source) {
-    if (!referralBanner) return;
-
-    referralBanner.hidden = false;
-    trackEvent('referral_banner_show', { ref, source });
-
-    if (referralBannerTimer) {
-      window.clearTimeout(referralBannerTimer);
-    }
-
-    const autoHideDelay = window.matchMedia('(max-width: 640px)').matches ? 3200 : 6500;
-    referralBannerTimer = window.setTimeout(() => {
-      hideReferralBanner('auto-timeout', true);
-    }, autoHideDelay);
   }
 
   window.abrirModal = function abrirModal(ref = 'default', origin = 'portfolio-detail') {
@@ -238,12 +199,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  if (closeReferralBanner && referralBanner) {
-    closeReferralBanner.addEventListener('click', () => {
-      hideReferralBanner('manual-close', true);
-    });
-  }
-
   const params = new URLSearchParams(window.location.search);
   const ref = params.get('ref') || 'default';
   const source = params.get('source') || 'direct';
@@ -263,10 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setLeadContent(ref, source);
     trackEvent('referral_visit', { ref, source, campaign });
 
-    if (referralBanner && !sessionStorage.getItem(bannerKey)) {
-      sessionStorage.setItem(bannerKey, 'shown');
-      showReferralBanner(ref, source);
-    }
+    sessionStorage.setItem(bannerKey, 'disabled');
 
     if (!sessionStorage.getItem(modalKey)) {
       sessionStorage.setItem(modalKey, 'shown');

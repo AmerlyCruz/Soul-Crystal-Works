@@ -68,7 +68,6 @@ body::after {
 
 main,
 .site-header,
-.referral-banner,
 .floating-cta,
 .lead-modal {
   position: relative;
@@ -104,54 +103,6 @@ a {
 .section-shell {
   width: var(--section-width);
   margin: 0 auto;
-}
-
-.referral-banner {
-  position: fixed;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(980px, calc(100vw - 24px));
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 18px;
-  border: 1px solid rgba(125, 211, 252, 0.22);
-  border-radius: 18px;
-  background: rgba(6, 11, 24, 0.88);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
-}
-
-.referral-banner__content {
-  min-width: 0;
-}
-
-.referral-banner__eyebrow {
-  display: inline-block;
-  margin-bottom: 3px;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.referral-banner__text {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.94rem;
-}
-
-.referral-banner__close {
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text);
-  font-size: 1.2rem;
 }
 
 .site-header {
@@ -925,31 +876,6 @@ body.lead-modal-open {
     top: 0;
   }
 
-  .referral-banner {
-    top: auto;
-    right: 12px;
-    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
-    left: 12px;
-    transform: none;
-    width: auto;
-    align-items: flex-start;
-    padding: 14px 48px 14px 14px;
-    border-radius: 16px;
-  }
-
-  .referral-banner__text {
-    font-size: 0.88rem;
-    line-height: 1.5;
-  }
-
-  .referral-banner__close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 32px;
-    height: 32px;
-  }
-
   .navbar {
     min-height: 62px;
     gap: 12px;
@@ -1072,19 +998,6 @@ body.lead-modal-open {
   .nav-menu {
     left: 10px;
     right: 10px;
-  }
-
-  .referral-banner {
-    bottom: calc(68px + env(safe-area-inset-bottom, 0px));
-    padding: 12px 44px 12px 12px;
-  }
-
-  .referral-banner__eyebrow {
-    font-size: 0.64rem;
-  }
-
-  .referral-banner__text {
-    font-size: 0.82rem;
   }
 
   .lead-modal h2 {
