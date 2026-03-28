@@ -59,6 +59,35 @@ window.scwAnalytics.getSummary()
 3. La publicacion es la raiz del proyecto (`.`)
 4. `netlify.toml` ya incluye headers y cache basicos
 
+## Capturas automaticas de proyectos
+
+La landing puede regenerar las previews de proyectos con Playwright.
+
+### Instalacion inicial
+
+```bash
+npm install
+npm run screenshots:install
+```
+
+### Generar capturas
+
+```bash
+npm run screenshots
+```
+
+Esto crea o actualiza:
+
+- `project-previews/aris.png`
+- `project-previews/flexi.png`
+
+El script actual captura estas URLs:
+
+- `https://soulcrystal.netlify.app/`
+- `GoodFinance/index.html` servido localmente por el script en `http://127.0.0.1:4173`
+
+Si quieres cambiar proyectos, edita el arreglo `previews` en `scripts/generate-project-previews.mjs`.
+
 ## Archivos principales
 
 - `index.html`

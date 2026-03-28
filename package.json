@@ -1,0 +1,12 @@
+{
+  "name": "soul-crystal-works",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "screenshots": "node scripts/generate-project-previews.mjs",
+    "screenshots:install": "playwright install chromium"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.2"
+  }
+}
