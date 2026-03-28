@@ -4,8 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const navToggle = document.getElementById('navToggle');
   const navMenu = document.getElementById('navMenu');
   const themeToggle = document.getElementById('themeToggle');
-  const serviceTabs = document.querySelectorAll('[data-service-target]');
-  const servicePanels = document.querySelectorAll('[data-service-panel]');
   const themeColorMeta = document.querySelector('meta[name="theme-color"]');
   const leadModal = document.getElementById('leadReferralModal');
   const leadEyebrow = document.getElementById('leadReferralEyebrow');
@@ -176,30 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function initializeServiceTabs() {
-    if (!serviceTabs.length || !servicePanels.length) return;
-
-    function setActiveService(serviceName) {
-      serviceTabs.forEach((tab) => {
-        const isActive = tab.dataset.serviceTarget === serviceName;
-        tab.classList.toggle('is-active', isActive);
-        tab.setAttribute('aria-selected', String(isActive));
-      });
-
-      servicePanels.forEach((panel) => {
-        const isActive = panel.dataset.servicePanel === serviceName;
-        panel.classList.toggle('is-active', isActive);
-        panel.hidden = !isActive;
-      });
-    }
-
-    serviceTabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        setActiveService(tab.dataset.serviceTarget || 'landing');
-      });
-    });
-  }
-
   function initializeSparkleCursor() {
     if (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
@@ -281,7 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initializeTheme();
   initializeSparkleCursor();
-  initializeServiceTabs();
 
   if (navToggle && navMenu) {
     navToggle.addEventListener('click', () => {
