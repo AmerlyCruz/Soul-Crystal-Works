@@ -4,13 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const navToggle = document.getElementById('navToggle');
   const navMenu = document.getElementById('navMenu');
   const themeToggle = document.getElementById('themeToggle');
+  const themeColorMeta = document.querySelector('meta[name="theme-color"]');
   const leadModal = document.getElementById('leadReferralModal');
   const leadEyebrow = document.getElementById('leadReferralEyebrow');
   const leadTitle = document.getElementById('leadReferralTitle');
   const leadCopy = document.getElementById('leadReferralCopy');
   const leadCta = document.getElementById('leadReferralCta');
   const closeLeadButtons = document.querySelectorAll('[data-close-lead-modal]');
-  const THEME_STORAGE_KEY = 'scw-theme';
+  const THEME_STORAGE_KEY = 'scw-theme-v2';
 
   const referralMessages = {
     beautyfast: {
@@ -124,6 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextTheme = theme === 'dark' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', nextTheme);
 
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', nextTheme === 'dark' ? '#0f172a' : '#f5f1ff');
+    }
+
     if (themeToggle) {
       const isDark = nextTheme === 'dark';
       themeToggle.setAttribute('aria-pressed', String(isDark));
@@ -135,14 +140,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function readStoredTheme() {
+    try {
+      const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+      return storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveStoredTheme(theme) {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {
+      return;
+    }
+  }
+
   function initializeTheme() {
-    const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-    applyTheme(storedTheme || 'light');
+    applyTheme('light');
+
+    const storedTheme = readStoredTheme();
+    if (storedTheme) {
+      applyTheme(storedTheme);
+    }
 
     themeToggle?.addEventListener('click', () => {
       const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
       const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+      saveStoredTheme(nextTheme);
       applyTheme(nextTheme);
       trackEvent('theme_toggle', { theme: nextTheme });
     });
@@ -155,27 +181,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const layer = document.createElement('div');
     layer.className = 'sparkle-layer';
+    layer.setAttribute('aria-hidden', 'true');
     document.body.appendChild(layer);
 
     let lastSparkleAt = 0;
+    let lastX = 0;
+    let lastY = 0;
 
-    document.addEventListener('pointermove', (event) => {
+    function spawnSparkles(clientX, clientY) {
       const now = Date.now();
       if (now - lastSparkleAt < 22) return;
-      lastSparkleAt = now;
 
-      for (let index = 0; index < 2; index += 1) {
+      if (Math.abs(clientX - lastX) < 4 && Math.abs(clientY - lastY) < 4) return;
+
+      lastSparkleAt = now;
+      lastX = clientX;
+      lastY = clientY;
+
+      for (let index = 0; index < 3; index += 1) {
         const sparkle = document.createElement('span');
         sparkle.className = 'sparkle';
-        sparkle.style.left = `${event.clientX + (Math.random() * 18 - 9)}px`;
-        sparkle.style.top = `${event.clientY + (Math.random() * 18 - 9)}px`;
-        sparkle.style.setProperty('--sparkle-size', `${Math.round(Math.random() * 7 + 8)}px`);
-        sparkle.style.setProperty('--sparkle-hue', `${Math.round(Math.random() * 50 + 235)}deg`);
+        sparkle.style.left = `${clientX + (Math.random() * 22 - 11)}px`;
+        sparkle.style.top = `${clientY + (Math.random() * 22 - 11)}px`;
+        sparkle.style.setProperty('--sparkle-size', `${Math.round(Math.random() * 8 + 10)}px`);
+        sparkle.style.setProperty('--sparkle-hue', `${Math.round(Math.random() * 36 + 250)}deg`);
         sparkle.style.setProperty('--sparkle-rotate', `${Math.round(Math.random() * 90)}deg`);
         layer.appendChild(sparkle);
-        window.setTimeout(() => sparkle.remove(), 720);
+        window.setTimeout(() => sparkle.remove(), 820);
       }
-    });
+    }
+
+    document.addEventListener('pointermove', (event) => {
+      spawnSparkles(event.clientX, event.clientY);
+    }, { passive: true });
+
+    document.addEventListener('mousemove', (event) => {
+      spawnSparkles(event.clientX, event.clientY);
+    }, { passive: true });
   }
 
   function shouldAutoOpenReferralModal(ref, source, campaign) {
