@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const leadCopy = document.getElementById('leadReferralCopy');
   const leadCta = document.getElementById('leadReferralCta');
   const closeLeadButtons = document.querySelectorAll('[data-close-lead-modal]');
+  let referralBannerTimer = null;
 
   const referralMessages = {
     beautyfast: {
@@ -125,6 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function openLeadModal(ref = 'default', origin = 'auto') {
     if (!leadModal) return;
     setLeadContent(ref, origin);
+    if (window.matchMedia('(max-width: 640px)').matches) {
+      hideReferralBanner('modal-priority', false);
+    }
     trackEvent('lead_modal_open', { ref, origin });
     leadModal.hidden = false;
     leadModal.setAttribute('aria-hidden', 'false');
@@ -136,6 +140,37 @@ document.addEventListener('DOMContentLoaded', () => {
     leadModal.hidden = true;
     leadModal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('lead-modal-open');
+  }
+
+  function hideReferralBanner(reason = 'dismissed', shouldTrack = true) {
+    if (!referralBanner) return;
+    if (referralBannerTimer) {
+      window.clearTimeout(referralBannerTimer);
+      referralBannerTimer = null;
+    }
+    if (referralBanner.hidden) return;
+
+    referralBanner.hidden = true;
+
+    if (shouldTrack) {
+      trackEvent('referral_banner_closed', { reason });
+    }
+  }
+
+  function showReferralBanner(ref, source) {
+    if (!referralBanner) return;
+
+    referralBanner.hidden = false;
+    trackEvent('referral_banner_show', { ref, source });
+
+    if (referralBannerTimer) {
+      window.clearTimeout(referralBannerTimer);
+    }
+
+    const autoHideDelay = window.matchMedia('(max-width: 640px)').matches ? 3200 : 6500;
+    referralBannerTimer = window.setTimeout(() => {
+      hideReferralBanner('auto-timeout', true);
+    }, autoHideDelay);
   }
 
   window.abrirModal = function abrirModal(ref = 'default', origin = 'portfolio-detail') {
@@ -205,8 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (closeReferralBanner && referralBanner) {
     closeReferralBanner.addEventListener('click', () => {
-      trackEvent('referral_banner_closed');
-      referralBanner.hidden = true;
+      hideReferralBanner('manual-close', true);
     });
   }
 
@@ -231,8 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (referralBanner && !sessionStorage.getItem(bannerKey)) {
       sessionStorage.setItem(bannerKey, 'shown');
-      referralBanner.hidden = false;
-      trackEvent('referral_banner_show', { ref, source });
+      showReferralBanner(ref, source);
     }
 
     if (!sessionStorage.getItem(modalKey)) {
