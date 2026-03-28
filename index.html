@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260327-7">
+  <link rel="stylesheet" href="styles.css?v=20260327-8">
 </head>
 <body>
   <header class="site-header">
@@ -151,7 +151,15 @@
       <div class="project-grid">
         <article class="project-card project-card--featured">
           <div class="project-card__media">
-            <img src="aris.png" alt="Vista previa de El Secreto de Aris">
+            <div class="project-preview" aria-label="Vista previa en vivo de El Secreto de Aris">
+              <iframe
+                src="https://soulcrystal.netlify.app/"
+                title="Vista previa de El Secreto de Aris"
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"
+              ></iframe>
+            </div>
           </div>
           <div class="project-card__body">
             <span class="project-card__tag">E-commerce de belleza</span>
@@ -170,7 +178,15 @@
 
         <article class="project-card">
           <div class="project-card__media">
-            <img src="flexi.png" alt="Vista previa de Flexiway">
+            <div class="project-preview" aria-label="Vista previa en vivo de Flexiway">
+              <iframe
+                src="https://darling-moxie-bbe1ae.netlify.app/"
+                title="Vista previa de Flexiway"
+                loading="lazy"
+                tabindex="-1"
+                aria-hidden="true"
+              ></iframe>
+            </div>
           </div>
           <div class="project-card__body">
             <span class="project-card__tag">Interfaz funcional</span>
@@ -231,6 +247,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=20260327-7"></script>
+  <script src="script.js?v=20260327-8"></script>
 </body>
 </html>
