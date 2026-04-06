@@ -512,23 +512,27 @@ async function saveToSupabase(content) {
     return content;
   }
 
-  window.scwContentManager = {
+ window.scwContentManager = {
     
-    async getContent() {
-  return await loadPublishedContent();
-},
+  async getContent() {
+    return await loadPublishedContent();
+  },
 
-save: saveToSupabase,
-buildWhatsAppUrl,
-    getRemoteConfig,
-    hasRemoteConfig,
-    applySharedContent,
-    applyHomeContent,
+  getDefaultContent() {
+    return clone(DEFAULT_CONTENT);
+  },
+
+  save: saveToSupabase,
+  buildWhatsAppUrl,
+  getRemoteConfig,
+  hasRemoteConfig,
+  applySharedContent,
+  applyHomeContent,
     
-    async loadPublishedContent() {
-      return loadPublishedContent();
-    }
-  };
+  async loadPublishedContent() {
+    return loadPublishedContent();
+  }
+};
 
   const currentContent = applySharedContent(document, clone(DEFAULT_CONTENT));
   applyHomeContent(document, currentContent);
