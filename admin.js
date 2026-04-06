@@ -605,6 +605,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         throw error;
       }
 
+      if (typeof manager.clearLocalDraft === 'function') {
+        manager.clearLocalDraft();
+      }
+
       setStatus('Cambios guardados en Supabase y listos para el sitio publico.');
     } catch (error) {
       setStatus(`No pude guardar en Supabase: ${error.message || 'revisa tu configuracion y politicas RLS.'}`);

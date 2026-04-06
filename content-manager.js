@@ -201,6 +201,14 @@
     }
   }
 
+  function clearStoredContent() {
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Ignore storage cleanup errors.
+    }
+  }
+
   function isConfiguredValue(value) {
     return typeof value === 'string' && !CONFIG_PLACEHOLDERS.has(value.trim());
   }
@@ -227,6 +235,18 @@
     return isConfiguredValue(config.url) && isConfiguredValue(config.anonKey);
   }
 
+  function buildSupabaseHeaders(apiKey) {
+    const headers = {
+      apikey: apiKey
+    };
+
+    if (typeof apiKey === 'string' && apiKey.trim() && !apiKey.startsWith('sb_publishable_')) {
+      headers.Authorization = `Bearer ${apiKey}`;
+    }
+
+    return headers;
+  }
+
   async function loadSupabaseContent() {
     if (!hasRemoteConfig()) {
       return null;
@@ -237,10 +257,7 @@
 
     try {
       const response = await fetch(endpoint, {
-        headers: {
-          apikey: config.anonKey,
-          Authorization: `Bearer ${config.anonKey}`
-        },
+        headers: buildSupabaseHeaders(config.anonKey),
         cache: 'no-cache'
       });
 
@@ -275,7 +292,7 @@
 
       return mergeContent(clone(DEFAULT_CONTENT), await response.json());
     } catch {
-      return readStoredContent();
+      return clone(DEFAULT_CONTENT);
     }
   }
 
@@ -513,6 +530,9 @@
       return readStoredContent();
     },
     saveContent,
+    clearLocalDraft() {
+      clearStoredContent();
+    },
     resetContent,
     buildWhatsAppUrl,
     getRemoteConfig,
