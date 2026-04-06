@@ -1,0 +1,163 @@
+{
+  "brand": {
+    "name": "Soul Crystal Works",
+    "description": "Diseno web con direccion visual solida, estructura clara y enfoque comercial real.",
+    "whatsappNumber": "18493990014",
+    "instagramUrl": "https://www.instagram.com/soulcrystalwebs?igsh=anc3Z25yNHQzM3F3&utm_source=qr"
+  },
+  "home": {
+    "hero": {
+      "kicker": "Diseno web para negocio",
+      "title": "Webs claras, elegantes y listas para vender mejor.",
+      "lead": "Diseno paginas y tiendas online para negocios que necesitan una presencia mas solida, mas simple de entender y mas facil de convertir en contacto o venta.",
+      "primaryCtaLabel": "Quiero cotizar mi proyecto",
+      "primaryCtaMessage": "Hola, quiero cotizar una pagina web con Soul Crystal Works.",
+      "secondaryCtaLabel": "Ver proyectos",
+      "points": [
+        "Diseno visual alineado a tu marca",
+        "Experiencia responsive y ordenada",
+        "CTA pensados para generar contacto"
+      ]
+    },
+    "services": {
+      "eyebrow": "Servicios",
+      "title": "Estos son mis niveles y categorias de servicio.",
+      "compareEyebrow": "Comparacion rapida",
+      "compareTitle": "Que cambia entre Nivel 1, Nivel 3 y Nivel 5",
+      "items": [
+        {
+          "id": "landing-page",
+          "visible": true,
+          "level": "Nivel 1",
+          "title": "Landing Page",
+          "meta": "Ver detalles",
+          "url": "landing-page.html",
+          "tone": "green"
+        },
+        {
+          "id": "ecommerce",
+          "visible": true,
+          "level": "Nivel 3",
+          "title": "Ecommerce",
+          "meta": "Ver detalles",
+          "url": "ecommerce.html",
+          "tone": "gold"
+        },
+        {
+          "id": "sistema-web",
+          "visible": true,
+          "level": "Nivel 5",
+          "title": "Sistema Web Completo",
+          "meta": "Ver detalles",
+          "url": "sistema-web.html",
+          "tone": "red"
+        },
+        {
+          "id": "rediseno",
+          "visible": true,
+          "level": "Categoria",
+          "title": "Rediseno",
+          "meta": "Ver detalles",
+          "url": "rediseno.html",
+          "tone": "violet"
+        }
+      ],
+      "compareItems": [
+        {
+          "id": "compare-1",
+          "visible": true,
+          "level": "Nivel 1",
+          "title": "Presencia digital",
+          "bullets": [
+            "1 sola pagina",
+            "WhatsApp y redes",
+            "2 a 4 dias"
+          ],
+          "tone": "green"
+        },
+        {
+          "id": "compare-3",
+          "visible": true,
+          "level": "Nivel 3",
+          "title": "Catalogo con pedidos",
+          "bullets": [
+            "Productos y categorias",
+            "Pedidos por WhatsApp",
+            "5 a 12 dias"
+          ],
+          "tone": "gold"
+        },
+        {
+          "id": "compare-5",
+          "visible": true,
+          "level": "Nivel 5",
+          "title": "Sistema completo",
+          "bullets": [
+            "Carrito y checkout",
+            "Base de datos y panel",
+            "2 a 4 semanas"
+          ],
+          "tone": "red"
+        }
+      ]
+    },
+    "projects": {
+      "kicker": "Proyectos seleccionados",
+      "title": "Trabajos reales con enfoque visual y comercial.",
+      "description": "Una muestra breve de como convierto una idea de negocio en una experiencia mas clara, mas creible y mejor presentada.",
+      "items": [
+        {
+          "id": "beautyfast",
+          "visible": true,
+          "featured": true,
+          "tag": "E-commerce de belleza",
+          "title": "El Secreto de Aris",
+          "description": "Tienda online con una experiencia mas cuidada, visualmente mas fuerte y pensada para vender con menos friccion.",
+          "bullets": [
+            "Catalogo y busqueda integrados",
+            "Compra mas clara y confiable"
+          ],
+          "previewSrc": "project-previews/aris.png",
+          "previewAlt": "Vista previa de El Secreto de Aris",
+          "projectUrl": "https://elsecretodearis.netlify.app",
+          "viewLabel": "Ver proyecto",
+          "interestLabel": "Quiero una tienda asi",
+          "leadRef": "beautyfast",
+          "trackKey": "beautyfast"
+        },
+        {
+          "id": "flexiway",
+          "visible": true,
+          "featured": false,
+          "tag": "Interfaz funcional",
+          "title": "Flexiway",
+          "description": "Una interfaz mas directa y limpia, enfocada en que el usuario entienda rapido y actue sin confusion.",
+          "bullets": [
+            "Lectura inmediata de la interfaz",
+            "Diseno limpio y funcional"
+          ],
+          "previewSrc": "project-previews/flexi.png",
+          "previewAlt": "Vista previa de Flexiway",
+          "projectUrl": "https://darling-moxie-bbe1ae.netlify.app/",
+          "viewLabel": "Ver proyecto",
+          "interestLabel": "Quiero algo parecido",
+          "leadRef": "flexiway",
+          "trackKey": "flexiway"
+        }
+      ]
+    },
+    "contact": {
+      "kicker": "Contacto",
+      "title": "Si tu negocio necesita una web mas clara, mas elegante y mejor enfocada, hablemos.",
+      "description": "Cuentame que necesitas y te dire como lo enfocaria para que tu marca se vea mejor y convierta con mas claridad.",
+      "primaryLabel": "Escribirme por WhatsApp",
+      "primaryMessage": "Hola, vi tu portafolio y quiero informacion sobre una pagina web.",
+      "secondaryLabel": "Ver proyectos otra vez",
+      "secondaryHref": "#proyectos"
+    }
+  },
+  "footer": {
+    "legalNote": "Al usar estos servicios aceptas los terminos y condiciones vigentes.",
+    "meta": "© 2026 Soul Crystal Works"
+  }
+}

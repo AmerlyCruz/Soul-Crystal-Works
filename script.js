@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
   const revealElements = document.querySelectorAll('.reveal');
-  const trackedElements = document.querySelectorAll('[data-track]');
   const compareToggle = document.getElementById('compareToggle');
   const compareGrid = document.getElementById('serviceCompareGrid');
   const navToggle = document.getElementById('navToggle');
@@ -8,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeToggle = document.getElementById('themeToggle');
   const themeColorMeta = document.querySelector('meta[name="theme-color"]');
   const leadModal = document.getElementById('leadReferralModal');
-  const projectToggleButtons = document.querySelectorAll('[data-project-toggle]');
   const legalModal = document.getElementById('legalModal');
   const legalModalEyebrow = document.getElementById('legalModalEyebrow');
   const legalModalTitle = document.getElementById('legalModalTitle');
@@ -306,9 +304,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function initializeProjectToggles() {
-    if (!projectToggleButtons.length) return;
+    const toggleButtons = document.querySelectorAll('[data-project-toggle]');
+    if (!toggleButtons.length) return;
 
-    projectToggleButtons.forEach((button) => {
+    toggleButtons.forEach((button) => {
+      if (button.dataset.scwToggleBound === 'true') return;
+
       const targetId = button.getAttribute('aria-controls');
       const detailPanel = targetId ? document.getElementById(targetId) : null;
       if (!detailPanel) return;
@@ -316,12 +317,28 @@ document.addEventListener('DOMContentLoaded', () => {
       detailPanel.hidden = true;
       button.setAttribute('aria-expanded', 'false');
       button.textContent = 'Ver detalles';
+      button.dataset.scwToggleBound = 'true';
 
       button.addEventListener('click', () => {
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         button.setAttribute('aria-expanded', String(!isExpanded));
         button.textContent = isExpanded ? 'Ver detalles' : 'Ocultar detalles';
         detailPanel.hidden = isExpanded;
+      });
+    });
+  }
+
+  function bindTrackedElements() {
+    const elements = document.querySelectorAll('[data-track]');
+    elements.forEach((element) => {
+      if (element.dataset.scwTrackBound === 'true') return;
+
+      element.dataset.scwTrackBound = 'true';
+      element.addEventListener('click', () => {
+        trackEvent(element.dataset.track || 'interaction', {
+          label: element.dataset.trackLabel || '',
+          text: element.textContent.trim().slice(0, 80)
+        });
       });
     });
   }
@@ -400,14 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', closeLegalModal);
   });
 
-  trackedElements.forEach((element) => {
-    element.addEventListener('click', () => {
-      trackEvent(element.dataset.track || 'interaction', {
-        label: element.dataset.trackLabel || '',
-        text: element.textContent.trim().slice(0, 80)
-      });
-    });
-  });
+  bindTrackedElements();
 
   if (leadModal) {
     leadModal.addEventListener('click', (event) => {
@@ -464,6 +474,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     clearReferralParamsFromUrl();
   }
+
+  document.addEventListener('scw:content-applied', () => {
+    initializeProjectToggles();
+    bindTrackedElements();
+  });
 });
 
 function trackWhatsApp(origin = 'general') {

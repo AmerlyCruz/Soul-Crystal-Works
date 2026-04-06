@@ -44,18 +44,18 @@
   <main>
     <section id="hero" class="hero section-shell reveal">
       <div class="hero__copy">
-        <p class="section-kicker">Diseño web para negocio</p>
-        <h1>Webs claras, elegantes y listas para vender mejor.</h1>
-        <p class="hero__lead">Diseño páginas y tiendas online para negocios que necesitan una presencia más sólida, más simple de entender y más fácil de convertir en contacto o venta.</p>
+        <p id="heroKicker" class="section-kicker">Diseño web para negocio</p>
+        <h1 id="heroTitle">Webs claras, elegantes y listas para vender mejor.</h1>
+        <p id="heroLead" class="hero__lead">Diseño páginas y tiendas online para negocios que necesitan una presencia más sólida, más simple de entender y más fácil de convertir en contacto o venta.</p>
 
         <div class="hero__actions">
-          <a href="https://wa.me/18493990014?text=Hola%2C%20quiero%20cotizar%20una%20pagina%20web%20con%20Soul%20Crystal%20Works" target="_blank" rel="noopener" class="button button-primary button-large" onclick="trackWhatsApp('hero-cta')" data-track="cta_click" data-track-label="hero-cta">
+          <a id="heroPrimaryCta" href="https://wa.me/18493990014?text=Hola%2C%20quiero%20cotizar%20una%20pagina%20web%20con%20Soul%20Crystal%20Works" target="_blank" rel="noopener" class="button button-primary button-large" onclick="trackWhatsApp('hero-cta')" data-track="cta_click" data-track-label="hero-cta">
             Quiero cotizar mi proyecto
           </a>
-          <a href="#proyectos" class="button button-secondary button-large" data-track="cta_click" data-track-label="hero-projects">Ver proyectos</a>
+          <a id="heroSecondaryCta" href="#proyectos" class="button button-secondary button-large" data-track="cta_click" data-track-label="hero-projects">Ver proyectos</a>
         </div>
 
-        <ul class="hero__points">
+        <ul id="heroPoints" class="hero__points">
           <li>Diseño visual alineado a tu marca</li>
           <li>Experiencia responsive y ordenada</li>
           <li>CTA pensados para generar contacto</li>
@@ -64,10 +64,10 @@
 
       <div class="hero__panel">
         <article id="servicios" class="signal-card signal-card--primary service-showcase">
-          <span class="signal-card__eyebrow">Servicios</span>
-          <h2>Estos son mis niveles y categorías de servicio.</h2>
+          <span id="servicesEyebrow" class="signal-card__eyebrow">Servicios</span>
+          <h2 id="servicesTitle">Estos son mis niveles y categorías de servicio.</h2>
 
-          <div class="service-links-grid">
+          <div id="servicesGrid" class="service-links-grid">
             <a href="landing-page.html" class="service-link-card service-link-card--green" data-track="service_page_open" data-track-label="landing-page">
               <span class="service-link-card__level">Nivel 1</span>
               <strong>Landing Page</strong>
@@ -93,8 +93,8 @@
           <div class="service-compare" aria-label="Comparación rápida entre niveles">
             <div class="service-compare__heading">
               <div>
-                <span class="signal-card__eyebrow">Comparación rápida</span>
-                <h3>Qué cambia entre Nivel 1, Nivel 3 y Nivel 5</h3>
+                <span id="compareEyebrow" class="signal-card__eyebrow">Comparación rápida</span>
+                <h3 id="compareTitle">Qué cambia entre Nivel 1, Nivel 3 y Nivel 5</h3>
               </div>
               <button id="compareToggle" class="compare-toggle" type="button" aria-expanded="false" aria-controls="serviceCompareGrid" aria-label="Ver comparación" data-track="comparison_toggle" data-track-label="comparison-toggle">
                 <svg class="compare-toggle__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -139,12 +139,12 @@
 
     <section id="proyectos" class="portfolio section-shell reveal">
       <div class="section-heading">
-        <p class="section-kicker">Proyectos seleccionados</p>
-        <h2>Trabajos reales con enfoque visual y comercial.</h2>
-        <p>Una muestra breve de cómo convierto una idea de negocio en una experiencia más clara, más creíble y mejor presentada.</p>
+        <p id="projectsKicker" class="section-kicker">Proyectos seleccionados</p>
+        <h2 id="projectsTitle">Trabajos reales con enfoque visual y comercial.</h2>
+        <p id="projectsDescription">Una muestra breve de cómo convierto una idea de negocio en una experiencia más clara, más creíble y mejor presentada.</p>
       </div>
 
-      <div class="project-grid">
+      <div id="projectGrid" class="project-grid">
         <article class="project-card project-card--featured">
           <div class="project-card__media">
             <div class="project-preview" aria-label="Vista previa de El Secreto de Aris">
@@ -212,15 +212,15 @@
     <section id="contacto" class="contact section-shell reveal">
       <div class="contact-card">
         <div class="contact-card__copy">
-          <p class="section-kicker">Contacto</p>
-          <h2>Si tu negocio necesita una web más clara, más elegante y mejor enfocada, hablemos.</h2>
-          <p>Cuéntame qué necesitas y te diré cómo lo enfocaría para que tu marca se vea mejor y convierta con más claridad.</p>
+          <p id="contactKicker" class="section-kicker">Contacto</p>
+          <h2 id="contactTitle">Si tu negocio necesita una web más clara, más elegante y mejor enfocada, hablemos.</h2>
+          <p id="contactDescription">Cuéntame qué necesitas y te diré cómo lo enfocaría para que tu marca se vea mejor y convierta con más claridad.</p>
         </div>
         <div class="contact-card__actions">
-          <a href="https://wa.me/18493990014?text=Hola%2C%20vi%20tu%20portafolio%20y%20quiero%20informacion%20sobre%20una%20pagina%20web" target="_blank" rel="noopener" class="button button-primary button-large" onclick="trackWhatsApp('contact-cta')" data-track="cta_click" data-track-label="contact-cta">
+          <a id="contactPrimaryCta" href="https://wa.me/18493990014?text=Hola%2C%20vi%20tu%20portafolio%20y%20quiero%20informacion%20sobre%20una%20pagina%20web" target="_blank" rel="noopener" class="button button-primary button-large" onclick="trackWhatsApp('contact-cta')" data-track="cta_click" data-track-label="contact-cta">
             Escribirme por WhatsApp
           </a>
-          <a href="#proyectos" class="button button-secondary button-large" data-track="cta_click" data-track-label="contact-projects">Ver proyectos otra vez</a>
+          <a id="contactSecondaryCta" href="#proyectos" class="button button-secondary button-large" data-track="cta_click" data-track-label="contact-projects">Ver proyectos otra vez</a>
         </div>
       </div>
     </section>
@@ -284,6 +284,7 @@
     </div>
   </div>
 
+  <script src="content-manager.js?v=20260405-admin-1"></script>
   <script src="script.js?v=20260328-11"></script>
 </body>
 </html>

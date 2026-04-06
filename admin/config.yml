@@ -1,0 +1,131 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "project-previews"
+public_folder: "/project-previews"
+
+locale: "es"
+publish_mode: simple
+
+collections:
+  - name: "site"
+    label: "Contenido del sitio"
+    files:
+      - label: "Contenido principal"
+        name: "site_content"
+        file: "data/site-content.json"
+        format: "json"
+        fields:
+          - label: "Marca"
+            name: "brand"
+            widget: "object"
+            fields:
+              - { label: "Nombre", name: "name", widget: "string" }
+              - { label: "Descripcion", name: "description", widget: "text" }
+              - { label: "WhatsApp", name: "whatsappNumber", widget: "string" }
+              - { label: "Instagram URL", name: "instagramUrl", widget: "string" }
+          - label: "Home"
+            name: "home"
+            widget: "object"
+            fields:
+              - label: "Hero"
+                name: "hero"
+                widget: "object"
+                fields:
+                  - { label: "Kicker", name: "kicker", widget: "string" }
+                  - { label: "Titulo", name: "title", widget: "text" }
+                  - { label: "Lead", name: "lead", widget: "text" }
+                  - { label: "CTA principal", name: "primaryCtaLabel", widget: "string" }
+                  - { label: "Mensaje CTA principal", name: "primaryCtaMessage", widget: "text" }
+                  - { label: "CTA secundario", name: "secondaryCtaLabel", widget: "string" }
+                  - label: "Puntos"
+                    name: "points"
+                    widget: "list"
+                    field: { label: "Punto", name: "point", widget: "string" }
+              - label: "Servicios"
+                name: "services"
+                widget: "object"
+                fields:
+                  - { label: "Eyebrow servicios", name: "eyebrow", widget: "string" }
+                  - { label: "Titulo servicios", name: "title", widget: "text" }
+                  - { label: "Eyebrow comparacion", name: "compareEyebrow", widget: "string" }
+                  - { label: "Titulo comparacion", name: "compareTitle", widget: "text" }
+                  - label: "Niveles o categorias"
+                    name: "items"
+                    widget: "list"
+                    summary: "{{fields.level}} · {{fields.title}}"
+                    fields:
+                      - { label: "ID", name: "id", widget: "string" }
+                      - { label: "Visible", name: "visible", widget: "boolean", default: true }
+                      - { label: "Nivel", name: "level", widget: "string" }
+                      - { label: "Titulo", name: "title", widget: "string" }
+                      - { label: "Meta", name: "meta", widget: "string" }
+                      - { label: "URL", name: "url", widget: "string" }
+                      - label: "Tono"
+                        name: "tone"
+                        widget: "select"
+                        options: ["green", "gold", "red", "violet"]
+                  - label: "Comparativas"
+                    name: "compareItems"
+                    widget: "list"
+                    summary: "{{fields.level}} · {{fields.title}}"
+                    fields:
+                      - { label: "ID", name: "id", widget: "string" }
+                      - { label: "Visible", name: "visible", widget: "boolean", default: true }
+                      - { label: "Nivel", name: "level", widget: "string" }
+                      - { label: "Titulo", name: "title", widget: "string" }
+                      - label: "Bullets"
+                        name: "bullets"
+                        widget: "list"
+                        field: { label: "Bullet", name: "bullet", widget: "string" }
+                      - label: "Tono"
+                        name: "tone"
+                        widget: "select"
+                        options: ["green", "gold", "red", "violet"]
+              - label: "Proyectos"
+                name: "projects"
+                widget: "object"
+                fields:
+                  - { label: "Kicker", name: "kicker", widget: "string" }
+                  - { label: "Titulo", name: "title", widget: "text" }
+                  - { label: "Descripcion", name: "description", widget: "text" }
+                  - label: "Items"
+                    name: "items"
+                    widget: "list"
+                    summary: "{{fields.title}}"
+                    fields:
+                      - { label: "ID", name: "id", widget: "string" }
+                      - { label: "Visible", name: "visible", widget: "boolean", default: true }
+                      - { label: "Destacado", name: "featured", widget: "boolean", default: false }
+                      - { label: "Tag", name: "tag", widget: "string" }
+                      - { label: "Titulo", name: "title", widget: "string" }
+                      - { label: "Descripcion", name: "description", widget: "text" }
+                      - label: "Bullets"
+                        name: "bullets"
+                        widget: "list"
+                        field: { label: "Bullet", name: "bullet", widget: "string" }
+                      - { label: "Preview src", name: "previewSrc", widget: "string" }
+                      - { label: "Preview alt", name: "previewAlt", widget: "string" }
+                      - { label: "URL del proyecto", name: "projectUrl", widget: "string" }
+                      - { label: "Texto ver proyecto", name: "viewLabel", widget: "string" }
+                      - { label: "Texto interes", name: "interestLabel", widget: "string" }
+                      - { label: "Lead ref", name: "leadRef", widget: "string" }
+                      - { label: "Track key", name: "trackKey", widget: "string" }
+              - label: "Contacto"
+                name: "contact"
+                widget: "object"
+                fields:
+                  - { label: "Kicker", name: "kicker", widget: "string" }
+                  - { label: "Titulo", name: "title", widget: "text" }
+                  - { label: "Descripcion", name: "description", widget: "text" }
+                  - { label: "CTA principal", name: "primaryLabel", widget: "string" }
+                  - { label: "Mensaje CTA principal", name: "primaryMessage", widget: "text" }
+                  - { label: "CTA secundario", name: "secondaryLabel", widget: "string" }
+                  - { label: "Href CTA secundario", name: "secondaryHref", widget: "string" }
+          - label: "Footer"
+            name: "footer"
+            widget: "object"
+            fields:
+              - { label: "Nota legal", name: "legalNote", widget: "text" }
+              - { label: "Meta", name: "meta", widget: "string" }

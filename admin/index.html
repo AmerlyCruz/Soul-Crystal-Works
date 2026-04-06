@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS | Soul Crystal Works</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Manrope, sans-serif;
+      background: #f4efe6;
+      color: #2f3623;
+    }
+
+    .cms-loading {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .cms-loading__card {
+      width: min(560px, 100%);
+      padding: 28px;
+      border: 1px solid rgba(84, 92, 60, 0.14);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 18px 40px rgba(84, 92, 60, 0.08);
+    }
+
+    .cms-loading__card h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.02;
+    }
+
+    .cms-loading__card p {
+      margin: 0;
+      line-height: 1.7;
+      color: #5e6648;
+    }
+  </style>
+</head>
+<body>
+  <div class="cms-loading">
+    <div class="cms-loading__card">
+      <h1>Editor online</h1>
+      <p>Si es tu primera vez, inicia sesion con Netlify Identity. Desde aqui podras editar el contenido principal del sitio y publicarlo sin tocar codigo.</p>
+    </div>
+  </div>
+
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="https://unpkg.com/decap-cms@3.5.0/dist/decap-cms.js"></script>
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', function(user) {
+        if (!user) {
+          window.netlifyIdentity.on('login', function() {
+            document.location.href = '/admin/';
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

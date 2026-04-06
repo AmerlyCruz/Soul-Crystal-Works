@@ -9,7 +9,52 @@ Landing comercial y portafolio premium de Soul Crystal Works.
 - Modal comercial por referencia (`ref`, `source`, `campaign`)
 - Banner de referencia para trafico entrante desde proyectos
 - Analitica first-party simple en `localStorage`
+- Panel `admin.html` para editar giro, niveles, proyectos, contacto y footer
+- Panel online en `/admin/` con Decap CMS para publicar contenido del sitio
 - Configuracion base para despliegue en Netlify
+
+## Panel administrador
+
+Abre `admin.html` para editar el contenido principal del sitio.
+
+Permite cambiar:
+
+- Informacion base del negocio
+- Hero principal del inicio
+- Niveles o categorias y comparativa
+- Proyectos del portafolio, incluyendo ocultarlos
+- Seccion de contacto
+- Footer compartido
+
+Detalles importantes:
+
+- Los cambios se guardan en `localStorage` usando la clave `scw-site-content-v1`
+- Afectan este navegador y este dispositivo, no publican cambios globales por si solos
+- El panel permite exportar e importar JSON para mover la configuracion
+
+## Decap CMS
+
+El sitio ahora puede leer contenido publicado desde `data/site-content.json`.
+
+Archivos principales del CMS:
+
+- `admin/index.html`
+- `admin/config.yml`
+- `data/site-content.json`
+
+Para usar el editor online en Netlify:
+
+1. Abre Netlify y entra al proyecto
+2. Activa `Identity`
+3. Activa `Git Gateway`
+4. Invita solo tu correo como usuaria
+5. Entra a `/admin/` en tu web publicada
+
+Notas importantes:
+
+- El editor online escribe en el repo y publica cambios reales para todos los visitantes
+- El panel local `admin.html` sigue existiendo para borradores en este navegador
+- Si ves diferencias entre el panel local y la web publicada, limpia el borrador local o usa `Restaurar` en `admin.html`
 
 ## Parametros de referencia soportados
 
