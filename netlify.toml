@@ -1,6 +1,19 @@
 [build]
   publish = "."
 
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/:splat"
+  status = 200
+  force = true
+  conditions = {Role = ["admin"]}
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/login.html"
+  status = 302
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -11,6 +24,11 @@
 
 [[headers]]
   for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/login.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 

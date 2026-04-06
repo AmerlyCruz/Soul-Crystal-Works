@@ -47,14 +47,17 @@ Para usar el editor online en Netlify:
 1. Abre Netlify y entra al proyecto
 2. Activa `Identity`
 3. Activa `Git Gateway`
-4. Invita solo tu correo como usuaria
-5. Entra a `/admin/` en tu web publicada
+4. Deja `Registration` en `Invite only`
+5. Invita solo tu correo como usuaria
+6. En `Identity > Users`, asigna el rol `admin` a tu usuaria
+7. Entra a `/admin/` en tu web publicada
 
 Notas importantes:
 
 - El editor online escribe en el repo y publica cambios reales para todos los visitantes
 - El panel local `admin.html` sigue existiendo para borradores en este navegador
 - Si ves diferencias entre el panel local y la web publicada, limpia el borrador local o usa `Restaurar` en `admin.html`
+- La ruta `/admin/` ahora queda protegida por rol en Netlify; sin el rol `admin` redirige a `/login.html`
 
 ## Parametros de referencia soportados
 

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso Administrador | Soul Crystal Works</title>
+  <style>
+    :root {
+      color-scheme: light;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Manrope, sans-serif;
+      color: #2f3623;
+      background:
+        radial-gradient(circle at top left, rgba(214, 172, 86, 0.18), transparent 30%),
+        linear-gradient(180deg, #f5efe3 0%, #f0eadf 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      width: min(560px, 100%);
+      padding: 32px;
+      border: 1px solid rgba(84, 92, 60, 0.14);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 20px 44px rgba(84, 92, 60, 0.1);
+      display: grid;
+      gap: 16px;
+    }
+
+    .login-kicker {
+      margin: 0;
+      color: #8f6b2f;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .login-card h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      line-height: 1.02;
+    }
+
+    .login-card p {
+      margin: 0;
+      color: #5e6648;
+      line-height: 1.75;
+    }
+
+    .login-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .login-button {
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: linear-gradient(135deg, #d6ac56, #8f6b2f);
+      color: #ffffff;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .login-button--secondary {
+      background: rgba(255, 255, 255, 0.72);
+      border-color: rgba(84, 92, 60, 0.14);
+      color: #2f3623;
+    }
+
+    .login-note {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(214, 172, 86, 0.12);
+      color: #4d553a;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="login-card">
+    <p class="login-kicker">Acceso privado</p>
+    <h1>Solo la administradora puede entrar al editor.</h1>
+    <p id="loginMessage">Inicia sesion con tu acceso de Netlify Identity. Si tu cuenta tiene el rol correcto, entraras al panel de edicion.</p>
+    <div class="login-actions">
+      <button id="loginButton" type="button" class="login-button">Iniciar sesion</button>
+      <a href="/" class="login-button login-button--secondary" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">Volver al sitio</a>
+    </div>
+    <div class="login-note">
+      Si inicias sesion y sigues viendo esta pagina, tu usuario aun no tiene el rol <strong>admin</strong> en Netlify Identity.
+    </div>
+  </main>
+
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script>
+    (function() {
+      const loginButton = document.getElementById('loginButton');
+      const loginMessage = document.getElementById('loginMessage');
+
+      function hasAdminRole(user) {
+        const roles = user && user.app_metadata && Array.isArray(user.app_metadata.roles)
+          ? user.app_metadata.roles
+          : [];
+        return roles.includes('admin');
+      }
+
+      loginButton.addEventListener('click', function() {
+        if (window.netlifyIdentity) {
+          window.netlifyIdentity.open('login');
+        }
+      });
+
+      if (!window.netlifyIdentity) return;
+
+      window.netlifyIdentity.on('init', function(user) {
+        if (!user) return;
+
+        if (hasAdminRole(user)) {
+          window.location.href = '/admin/';
+          return;
+        }
+
+        loginMessage.textContent = 'Tu sesion esta iniciada, pero este usuario no tiene el rol admin. Debes asignarlo en Netlify Identity > Users.';
+      });
+
+      window.netlifyIdentity.on('login', function(user) {
+        if (hasAdminRole(user)) {
+          window.location.href = '/admin/';
+          return;
+        }
+
+        loginMessage.textContent = 'La sesion se abrio, pero tu cuenta no tiene el rol admin. Asignalo en Netlify y vuelve a entrar.';
+      });
+
+      window.netlifyIdentity.init();
+    }());
+  </script>
+</body>
+</html>
