@@ -41,6 +41,7 @@ Archivos principales del CMS:
 - `admin/index.html`
 - `admin/config.yml`
 - `data/site-content.json`
+- `_redirects`
 
 Para usar el editor online en Netlify:
 
@@ -57,7 +58,7 @@ Notas importantes:
 - El editor online escribe en el repo y publica cambios reales para todos los visitantes
 - El panel local `admin.html` sigue existiendo para borradores en este navegador
 - Si ves diferencias entre el panel local y la web publicada, limpia el borrador local o usa `Restaurar` en `admin.html`
-- La ruta `/admin/` ahora queda protegida por rol en Netlify; sin el rol `admin` redirige a `/login.html`
+- La ruta `/admin/` ahora queda protegida por rol en Netlify desde `_redirects`; sin el rol `admin` redirige a `/login.html`
 
 ## Parametros de referencia soportados
 
