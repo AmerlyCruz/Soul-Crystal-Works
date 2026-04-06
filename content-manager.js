@@ -1,5 +1,4 @@
 (function initializeScwContentManager() {
-  const STORAGE_KEY = 'scw-site-content-v1';
   const CONTENT_DATA_URL = 'data/site-content.json';
   const CONFIG_PLACEHOLDERS = new Set(['', 'YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY']);
 
@@ -188,27 +187,6 @@
     return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(finalMessage)}`;
   }
 
-  function readStoredContent() {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        return clone(DEFAULT_CONTENT);
-      }
-
-      return mergeContent(clone(DEFAULT_CONTENT), JSON.parse(raw));
-    } catch {
-      return clone(DEFAULT_CONTENT);
-    }
-  }
-
-  function clearStoredContent() {
-    try {
-      window.localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // Ignore storage cleanup errors.
-    }
-  }
-
   function isConfiguredValue(value) {
     return typeof value === 'string' && !CONFIG_PLACEHOLDERS.has(value.trim());
   }
@@ -272,7 +250,11 @@
         return null;
       }
 
-      return mergeContent(clone(DEFAULT_CONTENT), row.content);
+      return mergeContent(clone(DEFAULT_CONTENT),
+                          
+                          
+                          
+                          row.content);
     } catch {
       return null;
     }
@@ -296,22 +278,6 @@
     }
   }
 
-  async function loadAdminContent() {
-    const publishedContent = await loadPublishedContent();
-    return mergeContent(publishedContent, readStoredContent());
-  }
-
-  function saveContent(nextContent) {
-    const normalized = mergeContent(clone(DEFAULT_CONTENT), nextContent || {});
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
-    return normalized;
-  }
-
-  function resetContent() {
-    window.localStorage.removeItem(STORAGE_KEY);
-    return clone(DEFAULT_CONTENT);
-  }
-
   function updateText(selector, value, root) {
     const element = (root || document).querySelector(selector);
     if (element && typeof value === 'string') {
@@ -319,6 +285,31 @@
     }
   }
 
+async function saveToSupabase(content) {
+  if (!hasRemoteConfig()) {
+    console.warn('Supabase no configurado');
+    return;
+  }
+
+  const config = getRemoteConfig();
+
+  const endpoint = `${config.url}/rest/v1/${config.contentTable}?slug=eq.${config.contentSlug}`;
+
+  try {
+    await fetch(endpoint, {
+      method: 'PATCH',
+      headers: {
+        ...buildSupabaseHeaders(config.anonKey),
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ content })
+    });
+  } catch (err) {
+    console.error('Error guardando en Supabase:', err);
+  }
+}
+  
   function updateWhatsAppLinks(content, root) {
     const phoneNumber = content.brand.whatsappNumber;
     const links = (root || document).querySelectorAll('a[href*="wa.me/"]');
@@ -439,7 +430,7 @@
   }
 
   function applySharedContent(root = document, incomingContent) {
-    const content = incomingContent || readStoredContent();
+    const content = incomingContent || clone(DEFAULT_CONTENT);
     updateText('.logo', content.brand.name, root);
     updateText('.site-footer__brand', content.brand.name, root);
     updateText('.site-footer__copy', content.brand.description, root);
@@ -451,7 +442,7 @@
   }
 
   function applyHomeContent(root = document, incomingContent) {
-    const content = incomingContent || readStoredContent();
+    const content = incomingContent || clone(DEFAULT_CONTENT);
     if (!root.getElementById('hero')) {
       return content;
     }
@@ -522,26 +513,18 @@
   }
 
   window.scwContentManager = {
-    storageKey: STORAGE_KEY,
-    getDefaultContent() {
-      return clone(DEFAULT_CONTENT);
-    },
-    getContent() {
-      return readStoredContent();
-    },
-    saveContent,
-    clearLocalDraft() {
-      clearStoredContent();
-    },
-    resetContent,
-    buildWhatsAppUrl,
+    
+    async getContent() {
+  return await loadPublishedContent();
+},
+
+save: saveToSupabase,
+buildWhatsAppUrl,
     getRemoteConfig,
     hasRemoteConfig,
     applySharedContent,
     applyHomeContent,
-    async loadAdminContent() {
-      return loadAdminContent();
-    },
+    
     async loadPublishedContent() {
       return loadPublishedContent();
     }
