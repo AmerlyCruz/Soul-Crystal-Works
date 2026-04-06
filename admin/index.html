@@ -44,23 +44,100 @@
 <body>
   <div class="cms-loading">
     <div class="cms-loading__card">
-      <h1>Editor online</h1>
-      <p>Si es tu primera vez, inicia sesion con Netlify Identity. Desde aqui podras editar el contenido principal del sitio y publicarlo sin tocar codigo.</p>
+      <h1 id="cmsTitle">Editor online</h1>
+      <p id="cmsMessage">Valido tu acceso antes de cargar el editor del sitio.</p>
+      <div id="cmsActions" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;"></div>
     </div>
   </div>
 
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/decap-cms@3.5.0/dist/decap-cms.js"></script>
   <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', function(user) {
-        if (!user) {
-          window.netlifyIdentity.on('login', function() {
-            document.location.href = '/admin/';
-          });
+    (function() {
+      const title = document.getElementById('cmsTitle');
+      const message = document.getElementById('cmsMessage');
+      const actions = document.getElementById('cmsActions');
+
+      function createActionButton(label, onClick, secondary) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        button.style.minHeight = '46px';
+        button.style.padding = '0 18px';
+        button.style.borderRadius = '999px';
+        button.style.border = secondary ? '1px solid rgba(84, 92, 60, 0.16)' : '1px solid transparent';
+        button.style.background = secondary ? 'rgba(255,255,255,0.72)' : 'linear-gradient(135deg, #d6ac56, #8f6b2f)';
+        button.style.color = secondary ? '#2f3623' : '#ffffff';
+        button.style.fontWeight = '800';
+        button.style.cursor = 'pointer';
+        button.addEventListener('click', onClick);
+        return button;
+      }
+
+      function clearActions() {
+        actions.innerHTML = '';
+      }
+
+      function renderSignedOut() {
+        title.textContent = 'Acceso privado';
+        message.textContent = 'Solo la administradora puede abrir el editor. Inicia sesion con Netlify Identity para continuar.';
+        clearActions();
+        actions.appendChild(createActionButton('Iniciar sesion', function() {
+          window.netlifyIdentity.open('login');
+        }));
+      }
+
+      function loadCms() {
+        title.textContent = 'Cargando editor';
+        message.textContent = 'Acceso validado. Estoy cargando el panel de edicion.';
+        clearActions();
+
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/decap-cms@3.5.0/dist/decap-cms.js';
+        script.onload = function() {
+          message.textContent = 'Editor cargado correctamente.';
+          actions.appendChild(createActionButton('Cerrar sesion', function() {
+            window.netlifyIdentity.logout();
+          }, true));
+        };
+        script.onerror = function() {
+          title.textContent = 'No pude cargar el editor';
+          message.textContent = 'Hubo un problema cargando Decap CMS. Recarga la pagina o intenta de nuevo en unos minutos.';
+          actions.appendChild(createActionButton('Recargar', function() {
+            window.location.reload();
+          }, true));
+        };
+        document.body.appendChild(script);
+      }
+
+      function initializeIdentity() {
+        if (!window.netlifyIdentity) {
+          title.textContent = 'Identity no disponible';
+          message.textContent = 'No pude conectar con Netlify Identity. Revisa si el servicio esta activo en Netlify.';
+          return;
         }
-      });
-    }
+
+        window.netlifyIdentity.on('init', function(user) {
+          if (user) {
+            loadCms();
+            return;
+          }
+
+          renderSignedOut();
+        });
+
+        window.netlifyIdentity.on('login', function() {
+          window.location.href = '/admin/';
+        });
+
+        window.netlifyIdentity.on('logout', function() {
+          window.location.href = '/admin/';
+        });
+
+        window.netlifyIdentity.init();
+      }
+
+      initializeIdentity();
+    }());
   </script>
 </body>
 </html>
