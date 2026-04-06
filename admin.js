@@ -1,8 +1,10 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const manager = window.scwContentManager;
   if (!manager) return;
 
   const form = document.getElementById('adminForm');
+  if (!form) return;
+
   const hub = document.getElementById('adminHub');
   const backButton = document.getElementById('adminBackButton');
   const viewEyebrow = document.getElementById('adminViewEyebrow');
@@ -29,6 +31,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const addServiceButton = document.getElementById('addService');
   const addCompareButton = document.getElementById('addCompareItem');
   const addProjectButton = document.getElementById('addProject');
+  const submitButton = form.querySelector('button[type="submit"]');
+  const authGate = document.getElementById('adminAuthGate');
+  const authForm = document.getElementById('adminAuthForm');
+  const authEmail = document.getElementById('adminAuthEmail');
+  const authPassword = document.getElementById('adminAuthPassword');
+  const authMagicLinkButton = document.getElementById('adminMagicLink');
+  const authStatus = document.getElementById('adminAuthStatus');
+  const sessionBar = document.getElementById('adminSessionBar');
+  const sessionEmail = document.getElementById('adminSessionEmail');
+  const signOutButton = document.getElementById('adminSignOut');
+  const privateApp = document.getElementById('adminPrivateApp');
 
   const TONES = ['green', 'gold', 'red', 'violet'];
   const THEME_STORAGE_KEY = 'scw-theme-v2';
@@ -65,7 +78,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  let draft = manager.getContent();
+  const remoteConfig = manager.getRemoteConfig ? manager.getRemoteConfig() : {
+    url: '',
+    anonKey: '',
+    contentTable: 'site_content',
+    contentSlug: 'primary'
+  };
+
+  let draft = manager.getDefaultContent();
+  let supabaseClient = null;
+  let currentUser = null;
 
   function applyTheme(theme) {
     const nextTheme = theme === 'dark' ? 'dark' : 'light';
@@ -112,6 +134,34 @@ document.addEventListener('DOMContentLoaded', () => {
   function setStatus(message) {
     if (status) {
       status.textContent = message;
+    }
+  }
+
+  function setAuthStatus(message) {
+    if (authStatus) {
+      authStatus.textContent = message;
+    }
+  }
+
+  function persistDraftLocally() {
+    try {
+      manager.saveContent(draft);
+    } catch {
+      // Ignore local backup errors.
+    }
+  }
+
+  function setPrivateAccess(isSignedIn) {
+    if (authGate) {
+      authGate.hidden = isSignedIn;
+    }
+
+    if (privateApp) {
+      privateApp.hidden = !isSignedIn;
+    }
+
+    if (sessionBar) {
+      sessionBar.hidden = !isSignedIn;
     }
   }
 
@@ -380,6 +430,16 @@ document.addEventListener('DOMContentLoaded', () => {
     renderRepeaters();
   }
 
+  async function loadEditorContent() {
+    draft = manager.loadAdminContent
+      ? await manager.loadAdminContent()
+      : await manager.loadPublishedContent();
+    persistDraftLocally();
+    refreshForm();
+    showHub();
+    updateHubStats();
+  }
+
   function readSimpleFields() {
     form.querySelectorAll('[name]').forEach((field) => {
       const nextValue = field.dataset.list === 'true' ? readLines(field.value) : field.value.trim();
@@ -490,11 +550,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('input', () => {
     readSimpleFields();
+    persistDraftLocally();
     setStatus('Hay cambios sin guardar.');
   });
 
   form.addEventListener('change', () => {
     readSimpleFields();
+    persistDraftLocally();
     setStatus('Hay cambios sin guardar.');
   });
 
@@ -512,11 +574,45 @@ document.addEventListener('DOMContentLoaded', () => {
     removeFromCollection(button.dataset.removeItem, button.dataset.index);
   });
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
+
+    if (!supabaseClient || !currentUser) {
+      setStatus('Inicia sesion para publicar cambios en Supabase.');
+      return;
+    }
+
     readSimpleFields();
-    draft = manager.saveContent(draft);
-    setStatus('Cambios guardados correctamente. Abre el inicio para verlos reflejados.');
+    persistDraftLocally();
+
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+
+    setStatus('Guardando cambios en Supabase...');
+
+    try {
+      const { error } = await supabaseClient
+        .from(remoteConfig.contentTable)
+        .upsert({
+          slug: remoteConfig.contentSlug,
+          content: draft
+        }, {
+          onConflict: 'slug'
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      setStatus('Cambios guardados en Supabase y listos para el sitio publico.');
+    } catch (error) {
+      setStatus(`No pude guardar en Supabase: ${error.message || 'revisa tu configuracion y politicas RLS.'}`);
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
   });
 
   addServiceButton.addEventListener('click', () => {
@@ -547,9 +643,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   resetButton.addEventListener('click', () => {
-    draft = manager.resetContent();
+    draft = manager.getDefaultContent();
+    persistDraftLocally();
     refreshForm();
-    setStatus('Se restauraron los valores iniciales del sitio.');
+    setStatus('Se cargaron los valores iniciales. Guarda para publicarlos en Supabase.');
   });
 
   exportButton.addEventListener('click', () => {
@@ -574,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const text = await file.text();
       draft = manager.saveContent(JSON.parse(text));
       refreshForm();
-      setStatus('Configuracion importada correctamente.');
+      setStatus('Configuracion importada. Revisa y guarda para publicarla en Supabase.');
     } catch {
       setStatus('No pude importar el archivo JSON. Verifica su formato.');
     } finally {
@@ -582,8 +679,129 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  async function handleSignedInState(session) {
+    currentUser = session && session.user ? session.user : null;
+
+    if (!currentUser) {
+      if (sessionEmail) {
+        sessionEmail.textContent = 'Sin sesion';
+      }
+      setPrivateAccess(false);
+      setAuthStatus('Inicia sesion con tu correo administrador para abrir el panel.');
+      return;
+    }
+
+    if (sessionEmail) {
+      sessionEmail.textContent = currentUser.email || 'Sesion activa';
+    }
+
+    setPrivateAccess(true);
+    setAuthStatus('');
+    await loadEditorContent();
+    setStatus('Contenido cargado desde Supabase.');
+  }
+
+  async function initializeSupabase() {
+    if (!manager.hasRemoteConfig || !manager.hasRemoteConfig()) {
+      setPrivateAccess(false);
+      setAuthStatus('Falta configurar site-config.js con tu URL y tu anon key de Supabase.');
+      if (authForm) {
+        authForm.hidden = true;
+      }
+      return;
+    }
+
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+      setPrivateAccess(false);
+      setAuthStatus('No pude cargar la libreria de Supabase en esta pagina.');
+      return;
+    }
+
+    supabaseClient = window.supabase.createClient(remoteConfig.url, remoteConfig.anonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) {
+      setAuthStatus('No pude validar la sesion actual. Intenta iniciar de nuevo.');
+      return;
+    }
+
+    await handleSignedInState(data.session);
+
+    supabaseClient.auth.onAuthStateChange(async (_event, session) => {
+      await handleSignedInState(session);
+    });
+  }
+
+  authForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    if (!supabaseClient) {
+      setAuthStatus('La conexion con Supabase no esta lista todavia.');
+      return;
+    }
+
+    const email = authEmail ? authEmail.value.trim() : '';
+    const password = authPassword ? authPassword.value : '';
+
+    if (!email || !password) {
+      setAuthStatus('Escribe tu correo y tu contrasena para entrar.');
+      return;
+    }
+
+    setAuthStatus('Abriendo sesion...');
+
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      setAuthStatus(`No pude iniciar sesion: ${error.message || 'verifica tus credenciales.'}`);
+      return;
+    }
+
+    setAuthStatus('Sesion iniciada. Cargando panel...');
+  });
+
+  authMagicLinkButton?.addEventListener('click', async () => {
+    if (!supabaseClient) {
+      setAuthStatus('La conexion con Supabase no esta lista todavia.');
+      return;
+    }
+
+    const email = authEmail ? authEmail.value.trim() : '';
+    if (!email) {
+      setAuthStatus('Escribe tu correo para enviarte el magic link.');
+      return;
+    }
+
+    setAuthStatus('Enviando magic link...');
+
+    const redirectTo = `${window.location.origin}/admin/`;
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: redirectTo }
+    });
+
+    if (error) {
+      setAuthStatus(`No pude enviar el magic link: ${error.message || 'intenta de nuevo.'}`);
+      return;
+    }
+
+    setAuthStatus('Magic link enviado. Revisa tu correo y vuelve a esta misma ruta.');
+  });
+
+  signOutButton?.addEventListener('click', async () => {
+    if (!supabaseClient) return;
+    await supabaseClient.auth.signOut();
+    setStatus('Sesion cerrada.');
+  });
+
   initializeTheme();
   refreshForm();
   showHub();
   updateHubStats();
+  await initializeSupabase();
 });

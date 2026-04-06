@@ -1,143 +1,459 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CMS | Soul Crystal Works</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Manrope, sans-serif;
-      background: #f4efe6;
-      color: #2f3623;
-    }
-
-    .cms-loading {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
-
-    .cms-loading__card {
-      width: min(560px, 100%);
-      padding: 28px;
-      border: 1px solid rgba(84, 92, 60, 0.14);
-      border-radius: 24px;
-      background: rgba(255, 255, 255, 0.78);
-      box-shadow: 0 18px 40px rgba(84, 92, 60, 0.08);
-    }
-
-    .cms-loading__card h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2rem, 4vw, 3rem);
-      line-height: 1.02;
-    }
-
-    .cms-loading__card p {
-      margin: 0;
-      line-height: 1.7;
-      color: #5e6648;
-    }
-  </style>
+  <meta name="theme-color" content="#f5f1ff">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Administrador | Soul Crystal Works</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css?v=20260406-supabase-admin-1">
 </head>
-<body>
-  <div class="cms-loading">
-    <div class="cms-loading__card">
-      <h1 id="cmsTitle">Editor online</h1>
-      <p id="cmsMessage">Valido tu acceso antes de cargar el editor del sitio.</p>
-      <div id="cmsActions" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;"></div>
+<body class="admin-page">
+  <header class="site-header">
+    <nav class="navbar">
+      <a href="../index.html#hero" class="logo">Soul Crystal Works</a>
+      <div class="nav-menu nav-menu--static">
+        <a href="../index.html">Ver sitio</a>
+        <a href="#adminHub">Secciones</a>
+      </div>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false" aria-label="Cambiar a modo oscuro">
+        <span class="theme-toggle__icon" aria-hidden="true">◐</span>
+        <span class="theme-toggle__label">Modo oscuro</span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="admin-shell section-shell">
+    <section class="admin-hero signal-card signal-card--primary">
+      <p class="section-kicker">Panel administrador</p>
+      <h1>Controla el contenido principal de Soul Crystal Works.</h1>
+      <p>Este panel ya no depende de Decap ni de Git Gateway. Inicias sesion con Supabase y los cambios se guardan en una sola fila JSON para que el sitio publico los lea directo.</p>
+      <div class="admin-hero__actions">
+        <a href="../index.html" class="button button-secondary">Abrir sitio</a>
+        <button id="exportConfig" type="button" class="button button-primary">Exportar JSON</button>
+        <label class="button button-secondary admin-import-label" for="importConfig">Importar JSON</label>
+        <input id="importConfig" type="file" accept="application/json">
+      </div>
+      <p id="adminStatus" class="admin-status" aria-live="polite">Inicia sesion para cargar el contenido publicado.</p>
+      <p class="admin-note">Si Supabase aun no esta configurado, el panel te lo indicara y el sitio seguira usando el JSON local como respaldo.</p>
+      <div id="adminSessionBar" class="admin-session-bar" hidden>
+        <span>Sesion activa:</span>
+        <strong id="adminSessionEmail">Sin sesion</strong>
+        <button id="adminSignOut" type="button" class="button button-secondary">Cerrar sesion</button>
+      </div>
+      <div class="admin-summary-grid" aria-label="Resumen de administracion disponible">
+        <article class="admin-summary-card">
+          <strong>Giro y marca</strong>
+          <span>Edita nombre, descripcion, WhatsApp e Instagram.</span>
+        </article>
+        <article class="admin-summary-card">
+          <strong>Niveles y categorias</strong>
+          <span>Agrega, edita y reorganiza niveles con sus comparativas.</span>
+        </article>
+        <article class="admin-summary-card">
+          <strong>Proyectos visibles</strong>
+          <span>Puedes ocultarlos o crear nuevos proyectos del portafolio.</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="adminAuthGate" class="admin-auth signal-card signal-card--secondary">
+      <div class="admin-section__heading">
+        <p class="section-kicker">Acceso privado</p>
+        <h2>Solo tu sesion de Supabase puede abrir el editor.</h2>
+        <p>Usa correo y contrasena o enviate un magic link. Aunque alguien entre a esta ruta, sin autenticacion no puede editar.</p>
+      </div>
+      <div class="admin-auth__grid">
+        <form id="adminAuthForm" class="admin-auth__card admin-grid" autocomplete="on">
+          <label class="admin-field">
+            <span>Correo administrador</span>
+            <input id="adminAuthEmail" type="email" autocomplete="email">
+          </label>
+          <label class="admin-field">
+            <span>Contrasena</span>
+            <input id="adminAuthPassword" type="password" autocomplete="current-password">
+          </label>
+          <div class="admin-auth__actions">
+            <button type="submit" class="button button-primary">Entrar</button>
+            <button id="adminMagicLink" type="button" class="button button-secondary">Enviar magic link</button>
+          </div>
+        </form>
+        <article class="admin-auth__card">
+          <strong>Configuracion esperada</strong>
+          <p>Este panel lee la URL y la anon key desde <code>site-config.js</code>. Si faltan, el login no se activa.</p>
+          <p>La tabla recomendada es <code>site_content</code> con una fila <code>primary</code>. El archivo SQL queda en <code>supabase/setup.sql</code>.</p>
+        </article>
+      </div>
+      <p id="adminAuthStatus" class="admin-auth__status" aria-live="polite">Validando configuracion...</p>
+    </section>
+
+    <div id="adminPrivateApp" hidden>
+      <section id="adminHub" class="admin-hub signal-card signal-card--secondary">
+        <div class="admin-section__heading">
+          <p class="section-kicker">Gestion visual</p>
+          <h2>Elige la seccion que quieres administrar.</h2>
+          <p>Cada area abre una vista dedicada en esta misma pagina para evitar un editor largo y sin jerarquia.</p>
+        </div>
+        <div class="admin-nav-grid">
+          <article class="admin-nav-card">
+            <span class="admin-nav-card__eyebrow">Marca</span>
+            <h3>Giro y canales</h3>
+            <p>Nombre, descripcion, WhatsApp e Instagram.</p>
+            <div class="admin-nav-card__stats">
+              <span id="brandStats">4 campos</span>
+            </div>
+            <button type="button" class="button button-secondary" data-open-view="brand">Abrir seccion</button>
+          </article>
+          <article class="admin-nav-card">
+            <span class="admin-nav-card__eyebrow">Home</span>
+            <h3>Hero principal</h3>
+            <p>Texto inicial, CTA y puntos clave del encabezado.</p>
+            <div class="admin-nav-card__stats">
+              <span id="heroStats">0 puntos</span>
+            </div>
+            <button type="button" class="button button-secondary" data-open-view="hero">Abrir seccion</button>
+          </article>
+          <article class="admin-nav-card">
+            <span class="admin-nav-card__eyebrow">Catalogo</span>
+            <h3>Niveles y comparativas</h3>
+            <p>Categorias, niveles visibles y tarjetas comparativas.</p>
+            <div class="admin-nav-card__stats">
+              <span id="servicesStats">0 niveles</span>
+              <span id="compareStats">0 comparativas</span>
+            </div>
+            <button type="button" class="button button-secondary" data-open-view="services">Abrir seccion</button>
+          </article>
+          <article class="admin-nav-card">
+            <span class="admin-nav-card__eyebrow">Portafolio</span>
+            <h3>Proyectos visibles</h3>
+            <p>Edita proyectos, ocultalos o agrega nuevos casos.</p>
+            <div class="admin-nav-card__stats">
+              <span id="projectsStats">0 proyectos</span>
+            </div>
+            <button type="button" class="button button-secondary" data-open-view="projects">Abrir seccion</button>
+          </article>
+          <article class="admin-nav-card">
+            <span class="admin-nav-card__eyebrow">Contacto</span>
+            <h3>Bloque comercial</h3>
+            <p>Mensajes y CTA del cierre comercial del home.</p>
+            <div class="admin-nav-card__stats">
+              <span id="contactStats">2 CTA</span>
+            </div>
+            <button type="button" class="button button-secondary" data-open-view="contact">Abrir seccion</button>
+          </article>
+          <article class="admin-nav-card">
+            <span class="admin-nav-card__eyebrow">Footer</span>
+            <h3>Informacion compartida</h3>
+            <p>Nota legal y texto final reutilizado en el sitio.</p>
+            <div class="admin-nav-card__stats">
+              <span id="footerStats">2 campos</span>
+            </div>
+            <button type="button" class="button button-secondary" data-open-view="footer">Abrir seccion</button>
+          </article>
+        </div>
+      </section>
+
+      <form id="adminForm" class="admin-form" hidden>
+        <div class="admin-workspace signal-card signal-card--secondary">
+          <div class="admin-workspace__header">
+            <div class="admin-workspace__copy">
+              <button id="adminBackButton" type="button" class="back-link admin-back-link">Volver a secciones</button>
+              <p id="adminViewEyebrow" class="section-kicker">Seccion</p>
+              <h2 id="adminViewTitle">Vista dedicada</h2>
+              <p id="adminViewDescription">Selecciona una seccion para comenzar a editar.</p>
+            </div>
+            <div class="admin-actions">
+              <button type="submit" class="button button-primary">Guardar cambios</button>
+              <button id="resetConfig" type="button" class="button button-secondary">Restaurar</button>
+            </div>
+          </div>
+
+          <section class="admin-view" data-view="brand" hidden>
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Identidad de la marca</strong>
+                  <span>Mostrar detalles de nombre y descripcion</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content admin-grid admin-grid--two">
+                <label class="admin-field">
+                  <span>Nombre de la marca</span>
+                  <input type="text" name="brand.name">
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Descripcion corta de la marca</span>
+                  <textarea name="brand.description" rows="3"></textarea>
+                </label>
+              </div>
+            </details>
+
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Canales directos</strong>
+                  <span>Mostrar detalles de contacto principal</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content admin-grid admin-grid--two">
+                <label class="admin-field">
+                  <span>Numero de WhatsApp</span>
+                  <input type="text" name="brand.whatsappNumber">
+                </label>
+                <label class="admin-field">
+                  <span>URL de Instagram</span>
+                  <input type="url" name="brand.instagramUrl">
+                </label>
+              </div>
+            </details>
+          </section>
+
+          <section class="admin-view" data-view="hero" hidden>
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Texto principal</strong>
+                  <span>Mostrar detalles del hero</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content admin-grid admin-grid--two">
+                <label class="admin-field">
+                  <span>Kicker</span>
+                  <input type="text" name="home.hero.kicker">
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Titulo principal</span>
+                  <textarea name="home.hero.title" rows="2"></textarea>
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Texto descriptivo</span>
+                  <textarea name="home.hero.lead" rows="4"></textarea>
+                </label>
+              </div>
+            </details>
+
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>CTA y argumentos</strong>
+                  <span>Mostrar botones y puntos clave</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content admin-grid admin-grid--two">
+                <label class="admin-field">
+                  <span>CTA principal</span>
+                  <input type="text" name="home.hero.primaryCtaLabel">
+                </label>
+                <label class="admin-field">
+                  <span>CTA secundario</span>
+                  <input type="text" name="home.hero.secondaryCtaLabel">
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Mensaje del CTA principal para WhatsApp</span>
+                  <textarea name="home.hero.primaryCtaMessage" rows="2"></textarea>
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Puntos del hero, uno por linea</span>
+                  <textarea name="home.hero.points" rows="4" data-list="true"></textarea>
+                </label>
+              </div>
+            </details>
+          </section>
+
+          <section class="admin-view" data-view="services" hidden>
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Encabezados de la seccion</strong>
+                  <span>Mostrar titulos generales</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content admin-grid admin-grid--two">
+                <label class="admin-field">
+                  <span>Eyebrow de servicios</span>
+                  <input type="text" name="home.services.eyebrow">
+                </label>
+                <label class="admin-field">
+                  <span>Eyebrow de comparacion</span>
+                  <input type="text" name="home.services.compareEyebrow">
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Titulo de servicios</span>
+                  <textarea name="home.services.title" rows="2"></textarea>
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Titulo de comparacion</span>
+                  <textarea name="home.services.compareTitle" rows="2"></textarea>
+                </label>
+              </div>
+            </details>
+
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Niveles o categorias</strong>
+                  <span>Mostrar listado editable</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content">
+                <div id="servicesEditor" class="admin-repeaters"></div>
+                <div class="admin-toolbar">
+                  <button id="addService" type="button" class="button button-secondary">Agregar nivel o categoria</button>
+                </div>
+              </div>
+            </details>
+
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Tarjetas comparativas</strong>
+                  <span>Mostrar comparativas editables</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content">
+                <div id="compareEditor" class="admin-repeaters"></div>
+                <div class="admin-toolbar">
+                  <button id="addCompareItem" type="button" class="button button-secondary">Agregar tarjeta comparativa</button>
+                </div>
+              </div>
+            </details>
+          </section>
+
+          <section class="admin-view" data-view="projects" hidden>
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Encabezado del portafolio</strong>
+                  <span>Mostrar titulos y descripcion</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content admin-grid admin-grid--two">
+                <label class="admin-field">
+                  <span>Eyebrow de proyectos</span>
+                  <input type="text" name="home.projects.kicker">
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Titulo de proyectos</span>
+                  <textarea name="home.projects.title" rows="2"></textarea>
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Descripcion de proyectos</span>
+                  <textarea name="home.projects.description" rows="3"></textarea>
+                </label>
+              </div>
+            </details>
+
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Listado de proyectos</strong>
+                  <span>Mostrar proyectos editables</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content">
+                <div id="projectsEditor" class="admin-repeaters"></div>
+                <div class="admin-toolbar">
+                  <button id="addProject" type="button" class="button button-secondary">Agregar proyecto</button>
+                </div>
+              </div>
+            </details>
+          </section>
+
+          <section class="admin-view" data-view="contact" hidden>
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Mensaje comercial</strong>
+                  <span>Mostrar textos de la seccion de contacto</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content admin-grid admin-grid--two">
+                <label class="admin-field">
+                  <span>Kicker contacto</span>
+                  <input type="text" name="home.contact.kicker">
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Titulo contacto</span>
+                  <textarea name="home.contact.title" rows="2"></textarea>
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Descripcion contacto</span>
+                  <textarea name="home.contact.description" rows="3"></textarea>
+                </label>
+              </div>
+            </details>
+
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Botones y destino</strong>
+                  <span>Mostrar CTA del bloque final</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content admin-grid admin-grid--two">
+                <label class="admin-field">
+                  <span>Texto CTA principal</span>
+                  <input type="text" name="home.contact.primaryLabel">
+                </label>
+                <label class="admin-field">
+                  <span>Texto CTA secundario</span>
+                  <input type="text" name="home.contact.secondaryLabel">
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Mensaje del CTA principal</span>
+                  <textarea name="home.contact.primaryMessage" rows="2"></textarea>
+                </label>
+                <label class="admin-field">
+                  <span>Enlace CTA secundario</span>
+                  <input type="text" name="home.contact.secondaryHref">
+                </label>
+              </div>
+            </details>
+          </section>
+
+          <section class="admin-view" data-view="footer" hidden>
+            <details class="admin-disclosure">
+              <summary class="admin-disclosure__summary">
+                <div>
+                  <strong>Informacion compartida</strong>
+                  <span>Mostrar footer legal y texto final</span>
+                </div>
+                <span class="admin-disclosure__toggle">Mostrar</span>
+              </summary>
+              <div class="admin-disclosure__content admin-grid admin-grid--two">
+                <label class="admin-field admin-field--full">
+                  <span>Nota legal footer</span>
+                  <textarea name="footer.legalNote" rows="3"></textarea>
+                </label>
+                <label class="admin-field admin-field--full">
+                  <span>Texto final del footer</span>
+                  <input type="text" name="footer.meta">
+                </label>
+              </div>
+            </details>
+          </section>
+        </div>
+      </form>
     </div>
-  </div>
+  </main>
 
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script>
-    (function() {
-      const title = document.getElementById('cmsTitle');
-      const message = document.getElementById('cmsMessage');
-      const actions = document.getElementById('cmsActions');
-
-      function createActionButton(label, onClick, secondary) {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.textContent = label;
-        button.style.minHeight = '46px';
-        button.style.padding = '0 18px';
-        button.style.borderRadius = '999px';
-        button.style.border = secondary ? '1px solid rgba(84, 92, 60, 0.16)' : '1px solid transparent';
-        button.style.background = secondary ? 'rgba(255,255,255,0.72)' : 'linear-gradient(135deg, #d6ac56, #8f6b2f)';
-        button.style.color = secondary ? '#2f3623' : '#ffffff';
-        button.style.fontWeight = '800';
-        button.style.cursor = 'pointer';
-        button.addEventListener('click', onClick);
-        return button;
-      }
-
-      function clearActions() {
-        actions.innerHTML = '';
-      }
-
-      function renderSignedOut() {
-        title.textContent = 'Acceso privado';
-        message.textContent = 'Solo la administradora puede abrir el editor. Inicia sesion con Netlify Identity para continuar.';
-        clearActions();
-        actions.appendChild(createActionButton('Iniciar sesion', function() {
-          window.netlifyIdentity.open('login');
-        }));
-      }
-
-      function loadCms() {
-        title.textContent = 'Cargando editor';
-        message.textContent = 'Acceso validado. Estoy cargando el panel de edicion.';
-        clearActions();
-
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/decap-cms@3.5.0/dist/decap-cms.js';
-        script.onload = function() {
-          message.textContent = 'Editor cargado correctamente.';
-          actions.appendChild(createActionButton('Cerrar sesion', function() {
-            window.netlifyIdentity.logout();
-          }, true));
-        };
-        script.onerror = function() {
-          title.textContent = 'No pude cargar el editor';
-          message.textContent = 'Hubo un problema cargando Decap CMS. Recarga la pagina o intenta de nuevo en unos minutos.';
-          actions.appendChild(createActionButton('Recargar', function() {
-            window.location.reload();
-          }, true));
-        };
-        document.body.appendChild(script);
-      }
-
-      function initializeIdentity() {
-        if (!window.netlifyIdentity) {
-          title.textContent = 'Identity no disponible';
-          message.textContent = 'No pude conectar con Netlify Identity. Revisa si el servicio esta activo en Netlify.';
-          return;
-        }
-
-        window.netlifyIdentity.on('init', function(user) {
-          if (user) {
-            loadCms();
-            return;
-          }
-
-          renderSignedOut();
-        });
-
-        window.netlifyIdentity.on('login', function() {
-          window.location.href = '/admin/';
-        });
-
-        window.netlifyIdentity.on('logout', function() {
-          window.location.href = '/admin/';
-        });
-
-        window.netlifyIdentity.init();
-      }
-
-      initializeIdentity();
-    }());
-  </script>
+  <script src="../site-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../content-manager.js?v=20260406-supabase-admin-1"></script>
+  <script src="../admin.js?v=20260406-supabase-admin-1"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 (function initializeScwContentManager() {
   const STORAGE_KEY = 'scw-site-content-v1';
   const CONTENT_DATA_URL = 'data/site-content.json';
+  const CONFIG_PLACEHOLDERS = new Set(['', 'YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY']);
 
   const DEFAULT_CONTENT = {
     brand: {
@@ -200,22 +201,87 @@
     }
   }
 
-  function mergeWithLocalDraft(baseContent) {
-    return mergeContent(baseContent, readStoredContent());
+  function isConfiguredValue(value) {
+    return typeof value === 'string' && !CONFIG_PLACEHOLDERS.has(value.trim());
+  }
+
+  function getRemoteConfig() {
+    const supabaseConfig = window.SCW_SITE_CONFIG && window.SCW_SITE_CONFIG.supabase
+      ? window.SCW_SITE_CONFIG.supabase
+      : {};
+
+    return {
+      url: typeof supabaseConfig.url === 'string' ? supabaseConfig.url.trim().replace(/\/$/, '') : '',
+      anonKey: typeof supabaseConfig.anonKey === 'string' ? supabaseConfig.anonKey.trim() : '',
+      contentTable: typeof supabaseConfig.contentTable === 'string' && supabaseConfig.contentTable.trim()
+        ? supabaseConfig.contentTable.trim()
+        : 'site_content',
+      contentSlug: typeof supabaseConfig.contentSlug === 'string' && supabaseConfig.contentSlug.trim()
+        ? supabaseConfig.contentSlug.trim()
+        : 'primary'
+    };
+  }
+
+  function hasRemoteConfig() {
+    const config = getRemoteConfig();
+    return isConfiguredValue(config.url) && isConfiguredValue(config.anonKey);
+  }
+
+  async function loadSupabaseContent() {
+    if (!hasRemoteConfig()) {
+      return null;
+    }
+
+    const config = getRemoteConfig();
+    const endpoint = `${config.url}/rest/v1/${encodeURIComponent(config.contentTable)}?slug=eq.${encodeURIComponent(config.contentSlug)}&select=content&limit=1`;
+
+    try {
+      const response = await fetch(endpoint, {
+        headers: {
+          apikey: config.anonKey,
+          Authorization: `Bearer ${config.anonKey}`
+        },
+        cache: 'no-cache'
+      });
+
+      if (!response.ok) {
+        throw new Error(`Unable to load Supabase content: ${response.status}`);
+      }
+
+      const payload = await response.json();
+      const row = Array.isArray(payload) ? payload[0] : payload;
+
+      if (!row || !row.content || typeof row.content !== 'object') {
+        return null;
+      }
+
+      return mergeContent(clone(DEFAULT_CONTENT), row.content);
+    } catch {
+      return null;
+    }
   }
 
   async function loadPublishedContent() {
+    const supabaseContent = await loadSupabaseContent();
+    if (supabaseContent) {
+      return supabaseContent;
+    }
+
     try {
       const response = await fetch(CONTENT_DATA_URL, { cache: 'no-cache' });
       if (!response.ok) {
         throw new Error(`Unable to load content: ${response.status}`);
       }
 
-      const publishedContent = mergeContent(clone(DEFAULT_CONTENT), await response.json());
-      return mergeWithLocalDraft(publishedContent);
+      return mergeContent(clone(DEFAULT_CONTENT), await response.json());
     } catch {
       return readStoredContent();
     }
+  }
+
+  async function loadAdminContent() {
+    const publishedContent = await loadPublishedContent();
+    return mergeContent(publishedContent, readStoredContent());
   }
 
   function saveContent(nextContent) {
@@ -449,14 +515,19 @@
     saveContent,
     resetContent,
     buildWhatsAppUrl,
+    getRemoteConfig,
+    hasRemoteConfig,
     applySharedContent,
     applyHomeContent,
+    async loadAdminContent() {
+      return loadAdminContent();
+    },
     async loadPublishedContent() {
       return loadPublishedContent();
     }
   };
 
-  const currentContent = applySharedContent(document);
+  const currentContent = applySharedContent(document, clone(DEFAULT_CONTENT));
   applyHomeContent(document, currentContent);
 
   window.scwContentManager.whenReady = loadPublishedContent().then((publishedContent) => {

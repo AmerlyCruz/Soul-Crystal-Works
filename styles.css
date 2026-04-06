@@ -417,6 +417,59 @@ a {
   line-height: 1.6;
 }
 
+.admin-auth {
+  display: grid;
+  gap: 20px;
+}
+
+.admin-auth__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 16px;
+}
+
+.admin-auth__card,
+.admin-session-bar {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.58);
+}
+
+:root[data-theme='dark'] .admin-auth__card,
+:root[data-theme='dark'] .admin-session-bar {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-auth__card p,
+.admin-auth__status {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.admin-auth__card strong,
+.admin-session-bar strong {
+  color: var(--heading);
+}
+
+.admin-auth__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-auth__status {
+  font-weight: 700;
+}
+
+.admin-session-bar {
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+
 .admin-form {
   display: grid;
   gap: 22px;
@@ -1946,6 +1999,10 @@ body.lead-modal-open {
   .admin-nav-grid {
     grid-template-columns: 1fr 1fr;
   }
+
+  .admin-auth__grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 860px) {
@@ -2053,6 +2110,10 @@ body.lead-modal-open {
   .admin-workspace__header {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .admin-session-bar {
+    grid-template-columns: 1fr;
   }
 
   .admin-grid--three {

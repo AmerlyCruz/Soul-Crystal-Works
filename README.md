@@ -9,13 +9,13 @@ Landing comercial y portafolio premium de Soul Crystal Works.
 - Modal comercial por referencia (`ref`, `source`, `campaign`)
 - Banner de referencia para trafico entrante desde proyectos
 - Analitica first-party simple en `localStorage`
-- Panel `admin.html` para editar giro, niveles, proyectos, contacto y footer
-- Panel online en `/admin/` con Decap CMS para publicar contenido del sitio
+- Panel privado en `/admin/` con login por Supabase
+- Configuracion de respaldo en `data/site-content.json`
 - Configuracion base para despliegue en Netlify
 
-## Panel administrador
+## Panel administrador privado
 
-Abre `admin.html` para editar el contenido principal del sitio.
+Abre `/admin/` para editar el contenido principal del sitio.
 
 Permite cambiar:
 
@@ -28,37 +28,38 @@ Permite cambiar:
 
 Detalles importantes:
 
-- Los cambios se guardan en `localStorage` usando la clave `scw-site-content-v1`
-- Afectan este navegador y este dispositivo, no publican cambios globales por si solos
-- El panel permite exportar e importar JSON para mover la configuracion
+- El editor usa Supabase Auth para iniciar sesion y guardar el contenido publicado
+- El sitio publico intenta leer primero desde Supabase y, si no esta configurado o no existe la fila, usa `data/site-content.json`
+- El panel sigue usando `localStorage` con la clave `scw-site-content-v1` como respaldo local para borradores e importaciones
+- `admin.html` ahora solo redirige a `/admin/`
 
-## Decap CMS
+## Configuracion de Supabase
 
-El sitio ahora puede leer contenido publicado desde `data/site-content.json`.
+Archivos principales:
 
-Archivos principales del CMS:
-
+- `site-config.js`
+- `supabase/setup.sql`
 - `admin/index.html`
-- `admin/config.yml`
+- `admin.js`
+- `content-manager.js`
 - `data/site-content.json`
-- `_redirects`
 
-Para usar el editor online en Netlify:
+Pasos:
 
-1. Abre Netlify y entra al proyecto
-2. Activa `Identity`
-3. Activa `Git Gateway`
-4. Deja `Registration` en `Invite only`
-5. Invita solo tu correo como usuaria
-6. En `Identity > Users`, asigna el rol `admin` a tu usuaria
-7. Entra a `/admin/` en tu web publicada
+1. Crea un proyecto en Supabase
+2. En `Project Settings > API`, copia tu `Project URL` y tu `anon public key`
+3. Edita `site-config.js` y pega ambos valores
+4. En `SQL Editor`, ejecuta `supabase/setup.sql`
+5. El SQL ya viene configurado para `amecruz334@gmail.com`; si luego cambias de correo admin, actualiza esa politica antes de ejecutarlo
+6. En `Authentication`, crea tu usuaria admin con correo y contrasena, o usa magic link
+7. Entra a `/admin/`, inicia sesion y guarda una vez para crear o actualizar la fila `primary`
 
-Notas importantes:
+Notas:
 
-- El editor online escribe en el repo y publica cambios reales para todos los visitantes
-- El panel local `admin.html` sigue existiendo para borradores en este navegador
-- Si ves diferencias entre el panel local y la web publicada, limpia el borrador local o usa `Restaurar` en `admin.html`
-- La ruta `/admin/` ahora queda protegida por rol en Netlify desde `_redirects`; sin el rol `admin` redirige a `/login.html`
+- La seguridad real queda en Supabase Auth + RLS, no en ocultar la ruta
+- Cualquiera puede abrir `/admin/`, pero sin una sesion valida no puede editar ni escribir en la tabla
+- El sitio publicado ya no depende de Decap CMS, Netlify Identity ni Git Gateway
+- Si todavia no configuraste Supabase, la web sigue funcionando con `data/site-content.json`
 
 ## Parametros de referencia soportados
 
@@ -107,6 +108,7 @@ window.scwAnalytics.getSummary()
 2. Conecta el repo en Netlify
 3. La publicacion es la raiz del proyecto (`.`)
 4. `netlify.toml` ya incluye headers y cache basicos
+5. No necesitas activar Netlify Identity ni Git Gateway para el admin
 
 ## Capturas automaticas de proyectos
 
@@ -142,4 +144,6 @@ Si quieres cambiar proyectos, edita el arreglo `previews` en `scripts/generate-p
 - `index.html`
 - `styles.css`
 - `script.js`
+- `site-config.js`
+- `supabase/setup.sql`
 - `netlify.toml`
