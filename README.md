@@ -30,7 +30,7 @@ Detalles importantes:
 
 - El editor usa Supabase Auth para iniciar sesion y guardar el contenido publicado
 - El sitio publico intenta leer primero desde Supabase y, si no esta configurado o no existe la fila, usa `data/site-content.json`
-- El panel sigue usando `localStorage` con la clave `scw-site-content-v1` como respaldo local para borradores e importaciones
+- El panel sigue usando `localStorage` con la clave `scw-admin-draft-v1` como respaldo local para borradores e importaciones
 - `admin.html` ahora solo redirige a `/admin/`
 
 ## Configuracion de Supabase
@@ -50,14 +50,17 @@ Pasos:
 2. En `Project Settings > API`, copia tu `Project URL` y tu `anon public key`
 3. Edita `site-config.js` y pega ambos valores
 4. En `SQL Editor`, ejecuta `supabase/setup.sql`
-5. El SQL ya viene configurado para `amecruz334@gmail.com`; si luego cambias de correo admin, actualiza esa politica antes de ejecutarlo
-6. En `Authentication`, crea tu usuaria admin con correo y contrasena, o usa magic link
-7. Entra a `/admin/`, inicia sesion y guarda una vez para crear o actualizar la fila `primary`
+5. El SQL crea una tabla `public.admin_users` y deja sembrado `amecruz334@gmail.com` como admin inicial
+6. Si luego cambias de correo admin, actualiza esa tabla en Supabase con `insert`, `update` o `delete`, sin reescribir las policies
+7. En `Authentication`, crea tu usuaria admin con correo y contrasena, o usa magic link
+8. Entra a `/admin/`, inicia sesion y guarda una vez para crear o actualizar la fila `primary`
 
 Notas:
 
 - La seguridad real queda en Supabase Auth + RLS, no en ocultar la ruta
 - Cualquiera puede abrir `/admin/`, pero sin una sesion valida no puede editar ni escribir en la tabla
+- No uses la `service_role key` en `site-config.js`; ahi solo debe vivir la `anon public key`
+- La escritura queda limitada por RLS al slug `primary` y a usuarios presentes en `public.admin_users`
 - El sitio publicado ya no depende de Decap CMS, Netlify Identity ni Git Gateway
 - Si todavia no configuraste Supabase, la web sigue funcionando con `data/site-content.json`
 

@@ -1,5 +1,6 @@
 (function initializeScwContentManager() {
   const CONTENT_DATA_URL = 'data/site-content.json';
+  const ADMIN_DRAFT_STORAGE_KEY = 'scw-admin-draft-v1';
   const CONFIG_PLACEHOLDERS = new Set(['', 'YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY']);
 
   const DEFAULT_CONTENT = {
@@ -152,6 +153,14 @@
     return JSON.parse(JSON.stringify(value));
   }
 
+  function normalizeContent(content) {
+    if (!content || typeof content !== 'object') {
+      return clone(DEFAULT_CONTENT);
+    }
+
+    return mergeContent(clone(DEFAULT_CONTENT), content);
+  }
+
   function mergeContent(base, override) {
     if (Array.isArray(base)) {
       return Array.isArray(override) ? override : clone(base);
@@ -250,11 +259,7 @@
         return null;
       }
 
-      return mergeContent(clone(DEFAULT_CONTENT),
-                          
-                          
-                          
-                          row.content);
+      return normalizeContent(row.content);
     } catch {
       return null;
     }
@@ -272,10 +277,56 @@
         throw new Error(`Unable to load content: ${response.status}`);
       }
 
-      return mergeContent(clone(DEFAULT_CONTENT), await response.json());
+      return normalizeContent(await response.json());
     } catch {
       return clone(DEFAULT_CONTENT);
     }
+  }
+
+  function getLocalDraft() {
+    try {
+      const rawDraft = localStorage.getItem(ADMIN_DRAFT_STORAGE_KEY);
+      if (!rawDraft) {
+        return null;
+      }
+
+      return normalizeContent(JSON.parse(rawDraft));
+    } catch {
+      return null;
+    }
+  }
+
+  function hasLocalDraft() {
+    return getLocalDraft() !== null;
+  }
+
+  function saveContent(content) {
+    const normalizedContent = normalizeContent(content);
+
+    try {
+      localStorage.setItem(ADMIN_DRAFT_STORAGE_KEY, JSON.stringify(normalizedContent));
+    } catch {
+      // Ignore local draft errors and keep returning the normalized data.
+    }
+
+    return normalizedContent;
+  }
+
+  function clearLocalDraft() {
+    try {
+      localStorage.removeItem(ADMIN_DRAFT_STORAGE_KEY);
+    } catch {
+      // Ignore storage cleanup errors.
+    }
+  }
+
+  async function loadAdminContent() {
+    const localDraft = getLocalDraft();
+    if (localDraft) {
+      return localDraft;
+    }
+
+    return loadPublishedContent();
   }
 
   function updateText(selector, value, root) {
@@ -292,6 +343,7 @@ async function saveToSupabase(content) {
   }
 
   const config = getRemoteConfig();
+  const normalizedContent = normalizeContent(content);
 
   const endpoint = `${config.url}/rest/v1/${config.contentTable}?slug=eq.${config.contentSlug}`;
 
@@ -303,7 +355,7 @@ async function saveToSupabase(content) {
         'Content-Type': 'application/json',
         'Prefer': 'return=minimal'
       },
-      body: JSON.stringify({ content })
+      body: JSON.stringify({ content: normalizedContent })
     });
   } catch (err) {
     console.error('Error guardando en Supabase:', err);
@@ -521,6 +573,12 @@ async function saveToSupabase(content) {
   getDefaultContent() {
     return clone(DEFAULT_CONTENT);
   },
+
+  normalizeContent,
+  saveContent,
+  loadAdminContent,
+  clearLocalDraft,
+  hasLocalDraft,
 
   save: saveToSupabase,
   buildWhatsAppUrl,

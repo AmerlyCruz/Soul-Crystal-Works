@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const sessionEmail = document.getElementById('adminSessionEmail');
   const signOutButton = document.getElementById('adminSignOut');
   const privateApp = document.getElementById('adminPrivateApp');
+  const authSubmitButton = authForm ? authForm.querySelector('button[type="submit"]') : null;
 
   const TONES = ['green', 'gold', 'red', 'violet'];
   const THEME_STORAGE_KEY = 'scw-theme-v2';
@@ -88,6 +89,125 @@ document.addEventListener('DOMContentLoaded', async () => {
   let draft = manager.getDefaultContent();
   let supabaseClient = null;
   let currentUser = null;
+  let hasUnsavedChanges = false;
+  let isSubmitting = false;
+
+  function setDirtyState(isDirty) {
+    hasUnsavedChanges = Boolean(isDirty);
+  }
+
+  function markDirty(message = 'Hay cambios sin guardar.') {
+    setDirtyState(true);
+    setStatus(message);
+  }
+
+  function markClean(message) {
+    setDirtyState(false);
+    if (message) {
+      setStatus(message);
+    }
+  }
+
+  function setAuthBusy(isBusy) {
+    if (authSubmitButton) authSubmitButton.disabled = isBusy;
+    if (authMagicLinkButton) authMagicLinkButton.disabled = isBusy;
+    if (authEmail) authEmail.disabled = isBusy;
+    if (authPassword) authPassword.disabled = isBusy;
+  }
+
+  function isSafeUrl(value, { allowRelative = false, allowHash = false } = {}) {
+    const text = String(value || '').trim();
+    if (!text) {
+      return false;
+    }
+
+    if (allowHash && text.startsWith('#')) {
+      return true;
+    }
+
+    try {
+      const parsed = new URL(text, window.location.origin);
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        return false;
+      }
+
+      if (allowRelative) {
+        return true;
+      }
+
+      return /^https?:\/\//i.test(text);
+    } catch {
+      return false;
+    }
+  }
+
+  function buildValidationMessage(issues) {
+    if (!issues.length) {
+      return '';
+    }
+
+    const preview = issues.slice(0, 3).join(' | ');
+    return issues.length > 3
+      ? `El borrador tiene ${issues.length} problemas: ${preview} | ...`
+      : `El borrador tiene ${issues.length} problemas: ${preview}`;
+  }
+
+  function validateDraft() {
+    const issues = [];
+    const whatsappDigits = String(draft.brand?.whatsappNumber || '').replace(/\D/g, '');
+
+    if (!String(draft.brand?.name || '').trim()) {
+      issues.push('La marca necesita un nombre.');
+    }
+
+    if (whatsappDigits.length < 8) {
+      issues.push('El numero de WhatsApp parece incompleto.');
+    }
+
+    if (!isSafeUrl(draft.brand?.instagramUrl)) {
+      issues.push('La URL de Instagram no es valida.');
+    }
+
+    draft.home.services.items.forEach((item, index) => {
+      if (!String(item.title || '').trim()) {
+        issues.push(`El servicio ${index + 1} no tiene titulo.`);
+      }
+
+      if (!isSafeUrl(item.url, { allowRelative: true, allowHash: true })) {
+        issues.push(`La URL del servicio ${index + 1} no es valida.`);
+      }
+    });
+
+    draft.home.services.compareItems.forEach((item, index) => {
+      if (!String(item.title || '').trim()) {
+        issues.push(`La comparativa ${index + 1} no tiene titulo.`);
+      }
+
+      if (!Array.isArray(item.bullets) || !item.bullets.some((bullet) => String(bullet || '').trim())) {
+        issues.push(`La comparativa ${index + 1} necesita al menos un bullet.`);
+      }
+    });
+
+    draft.home.projects.items.forEach((item, index) => {
+      if (!String(item.title || '').trim()) {
+        issues.push(`El proyecto ${index + 1} no tiene titulo.`);
+      }
+
+      if (!isSafeUrl(item.projectUrl)) {
+        issues.push(`La URL del proyecto ${index + 1} no es valida.`);
+      }
+
+      if (!String(item.previewSrc || '').trim()) {
+        issues.push(`El proyecto ${index + 1} necesita una imagen preview.`);
+      }
+    });
+
+    if (!isSafeUrl(draft.home.contact.secondaryHref, { allowRelative: true, allowHash: true })) {
+      issues.push('El enlace secundario de contacto no es valido.');
+    }
+
+    return issues;
+  }
 
   function applyTheme(theme) {
     const nextTheme = theme === 'dark' ? 'dark' : 'light';
@@ -145,9 +265,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function persistDraftLocally() {
     try {
-      manager.saveContent(draft);
+      if (typeof manager.saveContent === 'function') {
+        draft = manager.saveContent(draft);
+      }
+      return true;
     } catch {
-      // Ignore local backup errors.
+      return false;
     }
   }
 
@@ -249,13 +372,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function updateHubStats() {
-    const servicesTotal = draft.home.services.items.length;
-    const servicesVisible = countVisible(draft.home.services.items);
-    const compareTotal = draft.home.services.compareItems.length;
-    const compareVisible = countVisible(draft.home.services.compareItems);
-    const projectsTotal = draft.home.projects.items.length;
-    const projectsVisible = countVisible(draft.home.projects.items);
-    const heroPointsTotal = Array.isArray(draft.home.hero.points) ? draft.home.hero.points.length : 0;
+    const servicesItems = Array.isArray(draft.home?.services?.items) ? draft.home.services.items : [];
+    const compareItems = Array.isArray(draft.home?.services?.compareItems) ? draft.home.services.compareItems : [];
+    const projectItems = Array.isArray(draft.home?.projects?.items) ? draft.home.projects.items : [];
+    const servicesTotal = servicesItems.length;
+    const servicesVisible = countVisible(servicesItems);
+    const compareTotal = compareItems.length;
+    const compareVisible = countVisible(compareItems);
+    const projectsTotal = projectItems.length;
+    const projectsVisible = countVisible(projectItems);
+    const heroPointsTotal = Array.isArray(draft.home?.hero?.points) ? draft.home.hero.points.length : 0;
 
     if (brandStats) brandStats.textContent = '4 campos base';
     if (heroStats) heroStats.textContent = `${heroPointsTotal} puntos activos`;
@@ -277,7 +403,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function renderRepeaters() {
-    servicesEditor.innerHTML = draft.home.services.items.map((item, index) => createDisclosureCard(
+    if (servicesEditor) {
+      servicesEditor.innerHTML = draft.home.services.items.map((item, index) => createDisclosureCard(
       item.title || `Nivel o categoria ${index + 1}`,
       `${item.level || 'Nivel'} · ${item.visible !== false ? 'Visible' : 'Oculto'} · Mostrar detalles`,
       `
@@ -313,9 +440,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           </label>
         </div>
       `
-    )).join('');
+      )).join('');
+    }
 
-    compareEditor.innerHTML = draft.home.services.compareItems.map((item, index) => createDisclosureCard(
+    if (compareEditor) {
+      compareEditor.innerHTML = draft.home.services.compareItems.map((item, index) => createDisclosureCard(
       item.title || `Comparativa ${index + 1}`,
       `${item.level || 'Nivel'} · ${item.visible !== false ? 'Visible' : 'Oculta'} · Mostrar detalles`,
       `
@@ -347,9 +476,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           </label>
         </div>
       `
-    )).join('');
+      )).join('');
+    }
 
-    projectsEditor.innerHTML = draft.home.projects.items.map((item, index) => createDisclosureCard(
+    if (projectsEditor) {
+      projectsEditor.innerHTML = draft.home.projects.items.map((item, index) => createDisclosureCard(
       item.title || `Proyecto ${index + 1}`,
       `${item.tag || 'Proyecto'} · ${item.visible !== false ? 'Visible' : 'Oculto'} · Mostrar detalles`,
       `
@@ -409,7 +540,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           </label>
         </div>
       `
-    )).join('');
+      )).join('');
+    }
 
     updateHubStats();
   }
@@ -431,13 +563,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function loadEditorContent() {
+    const restoredLocalDraft = typeof manager.hasLocalDraft === 'function' && manager.hasLocalDraft();
+
     draft = manager.loadAdminContent
       ? await manager.loadAdminContent()
       : await manager.loadPublishedContent();
-    persistDraftLocally();
+
+    if (restoredLocalDraft) {
+      persistDraftLocally();
+    }
+
     refreshForm();
     showHub();
     updateHubStats();
+    setDirtyState(restoredLocalDraft);
+
+    return {
+      restoredLocalDraft
+    };
   }
 
   function readSimpleFields() {
@@ -467,7 +610,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       tone: 'green'
     });
     renderRepeaters();
-    setStatus('Nuevo nivel agregado. Guarda para aplicarlo al sitio.');
+    persistDraftLocally();
+    markDirty('Nuevo nivel agregado. Guarda para aplicarlo al sitio.');
   }
 
   function addCompareItem() {
@@ -480,7 +624,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       tone: 'green'
     });
     renderRepeaters();
-    setStatus('Nueva tarjeta comparativa agregada. Guarda para aplicarla al sitio.');
+    persistDraftLocally();
+    markDirty('Nueva tarjeta comparativa agregada. Guarda para aplicarla al sitio.');
   }
 
   function addProject() {
@@ -501,7 +646,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       trackKey: `project-${Date.now()}`
     });
     renderRepeaters();
-    setStatus('Nuevo proyecto agregado. Guarda para aplicarlo al sitio.');
+    persistDraftLocally();
+    markDirty('Nuevo proyecto agregado. Guarda para aplicarlo al sitio.');
   }
 
   function removeFromCollection(type, index) {
@@ -521,7 +667,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     renderRepeaters();
-    setStatus('Elemento eliminado del borrador. Guarda para confirmar el cambio.');
+    persistDraftLocally();
+    markDirty('Elemento eliminado del borrador. Guarda para confirmar el cambio.');
   }
 
   function reorderCollection(type, index, direction) {
@@ -545,19 +692,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!moved) return;
 
     renderRepeaters();
-    setStatus('Orden actualizado en el borrador. Guarda para confirmarlo.');
+    persistDraftLocally();
+    markDirty('Orden actualizado en el borrador. Guarda para confirmarlo.');
   }
 
   form.addEventListener('input', () => {
     readSimpleFields();
     persistDraftLocally();
-    setStatus('Hay cambios sin guardar.');
+    markDirty();
   });
 
   form.addEventListener('change', () => {
     readSimpleFields();
     persistDraftLocally();
-    setStatus('Hay cambios sin guardar.');
+    markDirty();
   });
 
   form.addEventListener('click', (event) => {
@@ -570,12 +718,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const button = event.target.closest('[data-remove-item]');
     if (!button) return;
+
+    if (!window.confirm('Esto eliminara el elemento del borrador actual. Quieres continuar?')) {
+      return;
+    }
+
     readSimpleFields();
     removeFromCollection(button.dataset.removeItem, button.dataset.index);
   });
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
 
     if (!supabaseClient || !currentUser) {
       setStatus('Inicia sesion para publicar cambios en Supabase.');
@@ -584,6 +741,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     readSimpleFields();
     persistDraftLocally();
+
+    const issues = validateDraft();
+    if (issues.length) {
+      setStatus(buildValidationMessage(issues));
+      return;
+    }
+
+    isSubmitting = true;
 
     if (submitButton) {
       submitButton.disabled = true;
@@ -609,27 +774,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         manager.clearLocalDraft();
       }
 
-      setStatus('Cambios guardados en Supabase y listos para el sitio publico.');
+      markClean('Cambios guardados en Supabase y listos para el sitio publico.');
     } catch (error) {
       setStatus(`No pude guardar en Supabase: ${error.message || 'revisa tu configuracion y politicas RLS.'}`);
     } finally {
+      isSubmitting = false;
       if (submitButton) {
         submitButton.disabled = false;
       }
     }
   });
 
-  addServiceButton.addEventListener('click', () => {
+  addServiceButton?.addEventListener('click', () => {
     readSimpleFields();
     addService();
   });
 
-  addCompareButton.addEventListener('click', () => {
+  addCompareButton?.addEventListener('click', () => {
     readSimpleFields();
     addCompareItem();
   });
 
-  addProjectButton.addEventListener('click', () => {
+  addProjectButton?.addEventListener('click', () => {
     readSimpleFields();
     addProject();
   });
@@ -646,14 +812,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     showHub();
   });
 
-  resetButton.addEventListener('click', () => {
+  resetButton?.addEventListener('click', () => {
+    if (!window.confirm('Esto restaurara el borrador local a los valores iniciales. Quieres continuar?')) {
+      return;
+    }
+
     draft = manager.getDefaultContent();
     persistDraftLocally();
     refreshForm();
-    setStatus('Se cargaron los valores iniciales. Guarda para publicarlos en Supabase.');
+    markDirty('Se cargaron los valores iniciales. Guarda para publicarlos en Supabase.');
   });
 
-  exportButton.addEventListener('click', () => {
+  exportButton?.addEventListener('click', () => {
     readSimpleFields();
     const blob = new Blob([JSON.stringify(draft, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -667,15 +837,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     setStatus('Configuracion exportada en JSON.');
   });
 
-  importInput.addEventListener('change', async (event) => {
+  importInput?.addEventListener('change', async (event) => {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
 
     try {
       const text = await file.text();
-      draft = manager.saveContent(JSON.parse(text));
+      const parsedContent = JSON.parse(text);
+      if (!parsedContent || typeof parsedContent !== 'object' || Array.isArray(parsedContent)) {
+        throw new Error('invalid-content');
+      }
+
+      draft = typeof manager.saveContent === 'function'
+        ? manager.saveContent(parsedContent)
+        : parsedContent;
       refreshForm();
-      setStatus('Configuracion importada. Revisa y guarda para publicarla en Supabase.');
+      const issues = validateDraft();
+      if (issues.length) {
+        markDirty(`Configuracion importada con observaciones. ${buildValidationMessage(issues)}`);
+      } else {
+        markDirty('Configuracion importada. Revisa y guarda para publicarla en Supabase.');
+      }
     } catch {
       setStatus('No pude importar el archivo JSON. Verifica su formato.');
     } finally {
@@ -701,8 +883,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     setPrivateAccess(true);
     setAuthStatus('');
-    await loadEditorContent();
-    setStatus('Contenido cargado desde Supabase.');
+    const { restoredLocalDraft } = await loadEditorContent();
+    if (restoredLocalDraft) {
+      markDirty('Se recupero tu borrador local. Revísalo y guarda cuando estes lista.');
+      return;
+    }
+
+    markClean('Contenido publicado cargado correctamente.');
   }
 
   async function initializeSupabase() {
@@ -759,14 +946,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     setAuthStatus('Abriendo sesion...');
+    setAuthBusy(true);
 
-    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if (error) {
-      setAuthStatus(`No pude iniciar sesion: ${error.message || 'verifica tus credenciales.'}`);
-      return;
+    try {
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) {
+        setAuthStatus(`No pude iniciar sesion: ${error.message || 'verifica tus credenciales.'}`);
+        return;
+      }
+
+      setAuthStatus('Sesion iniciada. Cargando panel...');
+    } finally {
+      setAuthBusy(false);
     }
-
-    setAuthStatus('Sesion iniciada. Cargando panel...');
   });
 
   authMagicLinkButton?.addEventListener('click', async () => {
@@ -782,25 +974,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     setAuthStatus('Enviando magic link...');
+    setAuthBusy(true);
 
-    const redirectTo = `${window.location.origin}/admin/`;
-    const { error } = await supabaseClient.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: redirectTo }
-    });
+    try {
+      const redirectTo = `${window.location.origin}/admin/`;
+      const { error } = await supabaseClient.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: redirectTo }
+      });
 
-    if (error) {
-      setAuthStatus(`No pude enviar el magic link: ${error.message || 'intenta de nuevo.'}`);
-      return;
+      if (error) {
+        setAuthStatus(`No pude enviar el magic link: ${error.message || 'intenta de nuevo.'}`);
+        return;
+      }
+
+      setAuthStatus('Magic link enviado. Revisa tu correo y vuelve a esta misma ruta.');
+    } finally {
+      setAuthBusy(false);
     }
-
-    setAuthStatus('Magic link enviado. Revisa tu correo y vuelve a esta misma ruta.');
   });
 
   signOutButton?.addEventListener('click', async () => {
     if (!supabaseClient) return;
     await supabaseClient.auth.signOut();
     setStatus('Sesion cerrada.');
+  });
+
+  window.addEventListener('beforeunload', (event) => {
+    if (!hasUnsavedChanges) {
+      return;
+    }
+
+    event.preventDefault();
+    event.returnValue = '';
   });
 
   initializeTheme();
